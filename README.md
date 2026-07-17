@@ -1,6 +1,6 @@
 # The 210 Project V4.7
 
-Small hotfix based on the restored V4.7 baseline.
+Homepage and archive UX release built on the stable V4.7.2 baseline.
 
 ## Included
 - Bottom nav `Map` and `AI` now work from blog/location pages as well as the homepage.
@@ -21,8 +21,10 @@ Small hotfix based on the restored V4.7 baseline.
 No new SQL is required if V4.6 SQL has already been run. The included schema is safe to run again if needed.
 
 
-### V4.7.2 Notes
+### V5.0 Added
+- Latest Story card on the homepage.
+- Archive timeline on the homepage.
+- More prominent visual status system for Live, Completed and Coming Soon countries.
+- Expandable country timeline cards showing location/story links.
+- Keeps V4.7.2 hotfixes: Insert Token removed, AI nav scroll improved, and publish button busy state fixed.
 - No SQL changes required.
-- Built from the restored V4.7 baseline.
-- Preserves country status values, map phase controls, visited/completed styling and existing Supabase schema.
-- Main publish-button fix: `finally{setBusy('')}` instead of leaving `busy` as `location`.
