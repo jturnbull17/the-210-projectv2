@@ -28,3 +28,8 @@ No new SQL is required if V4.6 SQL has already been run. The included schema is 
 - Expandable country timeline cards showing location/story links.
 - Keeps V4.7.2 hotfixes: Insert Token removed, AI nav scroll improved, and publish button busy state fixed.
 - No SQL changes required.
+
+
+### V5.1.1 safe admin patch
+- Fixed the admin blank-screen issue caused by the lucide Map icon shadowing the JavaScript Map constructor; dedupe now uses globalThis.Map.
+- Applied requested UX changes while preserving the working V5.0 admin/map/footer source.
