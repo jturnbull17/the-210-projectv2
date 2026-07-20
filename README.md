@@ -1,30 +1,16 @@
-# The 210 Project V4.7
+# The 210 Project V5.0 Usability Update
 
-Homepage and archive UX release built on the stable V4.7.2 baseline.
+Built from the V4.7 baseline with the requested V5 changes:
 
-## Included
-- Bottom nav `Map` and `AI` now work from blog/location pages as well as the homepage.
-- Homepage handles hash navigation after React has rendered, so the target section is visible correctly.
-- `Map` scrolls to the map panel at the top of the screen.
-- `AI` scrolls with the companion/chat card centred on screen.
-- Admin uploaded media now appears immediately after `Update location` / `Publish location` without needing a refresh and reselect.
-- Uploaded media section auto-scrolls into view after uploading.
-- Media rows now have `Copy token` and `Insert token` actions.
-- `Insert token` appends `[[media:...]]` into the blog editor so you can embed media faster from a phone.
+- Map and AI phone navigation no longer leaves `#journey-map` or `#companion` in the URL.
+- Mobile nav uses a click handler and clears the URL after scrolling.
+- Homepage bio updated to: `Jack and Grace's live travel journal, where we will document our experiences in South America and Asia over 210 days!`
+- Country chapter summary section is now content-height responsive.
+- Country chapter summary can now be edited in Admin via the country summary textarea.
+- Archive Timeline removed.
+- Latest Story retained.
+- Duplicate admin media preview fixed with media de-duplication by ID.
+- Existing locations in Admin are ordered by country route order, then location order/name.
 
-## Deploy
-- Upload the Source ZIP contents to GitHub.
-- Netlify build command: `npm run build`.
-- Netlify publish directory: `dist`.
-
-## Supabase
-No new SQL is required if V4.6 SQL has already been run. The included schema is safe to run again if needed.
-
-
-### V5.0 Added
-- Latest Story card on the homepage.
-- Archive timeline on the homepage.
-- More prominent visual status system for Live, Completed and Coming Soon countries.
-- Expandable country timeline cards showing location/story links.
-- Keeps V4.7.2 hotfixes: Insert Token removed, AI nav scroll improved, and publish button busy state fixed.
-- No SQL changes required.
+## SQL
+No new SQL should be required if your V4.6/V4.7 Supabase setup is already working, because this uses the existing `countries.summary`, `locations`, and `media` tables. The included SQL file is a safe reference only.
