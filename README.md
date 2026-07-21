@@ -30,6 +30,16 @@ No new SQL is required if V4.6 SQL has already been run. The included schema is 
 - No SQL changes required.
 
 
-### V5.1.1 safe admin patch
-- Fixed the admin blank-screen issue caused by the lucide Map icon shadowing the JavaScript Map constructor; dedupe now uses globalThis.Map.
-- Applied requested UX changes while preserving the working V5.0 admin/map/footer source.
+### V5.2 AI Companion added
+- Adds a Supabase Edge Function at `supabase/functions/ask-companion/index.ts`.
+- Uses OpenAI `gpt-4o-mini`.
+- Pulls published countries, locations, blogs, site settings and recent comments from Supabase.
+- The homepage AI Companion now calls the real function instead of using a mock answer.
+- No database SQL changes are required.
+
+### Setup
+1. Add your OpenAI key to Supabase secrets:
+   `supabase secrets set OPENAI_API_KEY=your_openai_key`
+2. Deploy the Edge Function:
+   `supabase functions deploy ask-companion --no-verify-jwt`
+3. Deploy the website as usual through GitHub/Netlify.

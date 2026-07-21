@@ -1,0 +1,2 @@
+[functions.ask-companion]
+verify_jwt = false
