@@ -2,50 +2,49 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers':
-    'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-function compactText(value: u*known, max = 1200) {
-  return Stri*g(value ?? '')
-    .replace(/\s+/g* ' ')
+function compactText(value: unknown, max = 1200) {
+  return String(value ?? '')
+    .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, ma*)
+    .slice(0, max)
 }
 
 Deno.serve(async (req) => {
- *if (req.method === 'OPTIONS') {
-  * return new Response('ok', {
-     *headers: corsHeaders,
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', {
+      headers: corsHeaders,
     })
   }
 
-* try {
-    const { question } = aw*it req.json()
+  try {
+    const { question } = await req.json()
 
-    const cleanQues*ion = compactText(question, 500)
+    const cleanQuestion = compactText(question, 500)
 
-*   if (!cleanQuestion) {
-      ret*rn new Response(
-        JSON.stri*gify({
-          answer: 'Ask me a*question about the journey first.'*
+    if (!cleanQuestion) {
+      return new Response(
+        JSON.stringify({
+          answer: 'Ask me a question about the journey first.',
         }),
         {
-          h*aders: {
-            ...corsHeader*,
-            'Content-Type': 'app*ication/json',
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/json',
           },
-      *   status: 400,
+          status: 400,
         }
       )
-*   }
+    }
 
-    const supabaseUrl = Deno*env.get('SUPABASE_URL')
-    const *upabaseKey = Deno.env.get('SUPABAS*_ANON_KEY')
-    const geminiKey = *eno.env.get('GEMINI_API_KEY')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')
+    const geminiKey = Deno.env.get('GEMINI_API_KEY')
 
-   *if (!supabaseUrl || !supabaseKey) {
+    if (!supabaseUrl || !supabaseKey) {
       throw new Error('Missing Supabase environment variables')
     }
 
