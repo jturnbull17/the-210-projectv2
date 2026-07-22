@@ -12,6 +12,7 @@ Deno.serve(async (req) => {
     });
   }
 
+  if (req.method === "GET") {
     return new Response(
       JSON.stringify({
         answer: "AI Companion is ready",
