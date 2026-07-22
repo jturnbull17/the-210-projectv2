@@ -175,7 +175,7 @@ ${commentsContext || 'No comments yet.'}
 Visitor question:
 ${cleanQuestion}
 `
-
+console.log("Gemini key exists:", !!geminiKey);
     const geminiResponse = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
       {
@@ -202,7 +202,13 @@ ${cleanQuestion}
       }
     )
 
-    const geminiJson = await geminiResponse.json()
+const responseText = await geminiResponse.text();
+
+console.log("Gemini response:", responseText);
+
+const geminiJson = responseText
+  ? JSON.parse(responseText)
+  : {};
 
     if (!geminiResponse.ok) {
       throw new Error(
