@@ -14,9 +14,8 @@
 
 /* The 210 Companion suggested questions */
 .suggested-questions {
-  margin: 18px 0 16px;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 8px;
 }
 
@@ -34,11 +33,16 @@
   border: 1px solid rgba(243,236,221,.22);
   background: rgba(243,236,221,.08);
   color: inherit;
-  padding: 9px 12px;
+  padding: 10px 14px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
-  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+
+  text-align: left;
+  justify-content: flex-start;
+
+  width: 100%;
+  max-width: 100%;
 }
 
 .suggested-questions button:hover {
@@ -52,5 +56,19 @@
 }
 
 .ask-bar button {
-  min-width: 78px;
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+}
+
+.ask-bar {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.ask-bar input {
+  flex: 1;
+  min-width: 0;
+  font-size: 16px;
 }
