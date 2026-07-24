@@ -478,6 +478,40 @@ if (
   });
 }
 
+if (
+  questionLower.includes("summarise their journey") ||
+  questionLower.includes("summarize their journey") ||
+  questionLower.includes("journey so far") ||
+  questionLower.includes("trip so far")
+) {
+  const visitedCountries = countries.filter(function(country) {
+    return country.status === "visited" || country.status === "live";
+  });
+
+  const countryNames = visitedCountries.map(function(country) {
+    return country.name;
+  });
+
+  const locationNames = locations
+    .filter(function(location) {
+      return visitedCountries.some(function(country) {
+        return country.id === location.country_id;
+      });
+    })
+    .map(function(location) {
+      return location.name;
+    });
+
+  return jsonResponse({
+    answer:
+      "So far, Jack and Grace have travelled through " +
+      countryNames.join(", ") +
+      ". Along the way they have visited locations including " +
+      locationNames.slice(0, 12).join(", ") +
+      ". Highlights have included Machu Picchu, coastal adventures, local food experiences, historic city exploration and preparing for the next stages of the journey."
+  });
+}
+
     /*
       GEMINI ANSWERS.
       Only use Gemini when simple Supabase answers are not enough.
