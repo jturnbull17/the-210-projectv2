@@ -448,6 +448,36 @@ if (
       });
     }
 
+if (
+  matchingCountries.length === 1 &&
+  (
+    questionLower.includes("what locations") ||
+    questionLower.includes("which locations") ||
+    questionLower.includes("where did they visit") ||
+    questionLower.includes("places visited")
+  )
+) {
+  const matchedCountry = matchingCountries[0];
+
+  const countryLocations = locations
+    .filter(function(location) {
+      return location.country_id === matchedCountry.id;
+    })
+    .map(function(location) {
+      return location.name;
+    })
+    .filter(Boolean);
+
+  return jsonResponse({
+    answer:
+      "During their time in " +
+      matchedCountry.name +
+      ", Jack and Grace visited " +
+      countryLocations.join(", ") +
+      "."
+  });
+}
+
     /*
       GEMINI ANSWERS.
       Only use Gemini when simple Supabase answers are not enough.
