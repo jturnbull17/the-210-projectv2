@@ -455,20 +455,24 @@ function Router(){
 
   let page;
 
-  if(p[0] === 'admin'){
-    page = <Admin/>;
+ if(p[0] === 'admin'){
+  page = <Admin />;
+}
 else if(p[0] === 'gallery'){
   page = <GalleryIndex />;
 }
-  }else if(p[0] === 'archive' && p[1] && p[2] && p[3] === 'gallery'){
-    page = <LocationPage countryId={p[1]} slug={p[2]} gallery />;
-  }else if(p[0] === 'archive' && p[1] && p[2]){
-    page = <LocationPage countryId={p[1]} slug={p[2]} />;
-  }else if(p[0] === 'archive' && p[1]){
-    page = <CountryPage id={p[1]} />;
-  }else{
-    page = <Home />;
-  }
+else if(p[0] === 'archive' && p[1] && p[2] && p[3] === 'gallery'){
+  page = <LocationPage countryId={p[1]} slug={p[2]} gallery />;
+}
+else if(p[0] === 'archive' && p[1] && p[2]){
+  page = <LocationPage countryId={p[1]} slug={p[2]} />;
+}
+else if(p[0] === 'archive' && p[1]){
+  page = <CountryPage id={p[1]} />;
+}
+else{
+  page = <Home />;
+}
 
   return (
     <>
