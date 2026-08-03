@@ -297,6 +297,18 @@ function SiteMenu({data}){
                 'Latest Story'
               ),
 
+		React.createElement(
+  'button',
+  {
+    type: 'button',
+    onClick: function(){
+      setOpen(false);
+      window.location.assign('/gallery');
+    }
+  },
+  'Gallery'
+),
+
               React.createElement(
                 'div',
                 {
@@ -333,6 +345,86 @@ const loadingMessages=[
 function getLatestStory(data){const locs=[...(data.locations||[])];if(!locs.length)return null;const current=locs.find(l=>l.country_id===data.settings.current_country_id&&l.slug===data.settings.current_location_slug);const sorted=[...locs].sort((a,b)=>String(b.created_at||b.updated_at||b.date_text||'').localeCompare(String(a.created_at||a.updated_at||a.date_text||'')));const loc=current||sorted[0]||locs[locs.length-1];const country=getCountry(data.countries,loc.country_id);return{loc,country}}
 function LatestStory({data}){const latest=getLatestStory(data);if(!latest)return null;const{loc,country}=latest;return <section className="story-section latest-story-section"><div className="section-inner latest-story-inner"><div><p className="kicker dark"><i/> LATEST STORY</p><h2>{loc.name}</h2><p>{loc.summary||'The next story from the journey will appear here.'}</p><div className="latest-meta"><span>{country?.name}</span>{loc.date_text&&<span>{loc.date_text}</span>}<span>{statusLabel(country,data.settings.current_country_id)}</span></div></div><a className="latest-card"href={`/archive/${country.id}/${loc.slug}`}><span>Read latest entry</span><strong>{loc.name}</strong><small>{country?.name}</small></a></div></section>}
 function ArchiveTimeline({data}){const[open,setOpen]=useState(data.settings.current_country_id||data.countries[0]?.id);return <section className="story-section archive-timeline-section"id="archive"><div className="section-inner"><div className="archive-head"><div><p className="kicker dark"><i/> ARCHIVE TIMELINE</p><h2>The journey, in order.</h2><p>Expand a country to jump straight into its locations without digging through extra pages.</p></div><div className="archive-status-key"><span className="status-key live">Live</span><span className="status-key visited">Completed</span><span className="status-key upcoming">Coming soon</span></div></div><div className="timeline-list">{data.countries.map(c=>{const locs=data.locations.filter(l=>l.country_id===c.id);const isOpen=open===c.id;const label=statusLabel(c,data.settings.current_country_id);return <article key={c.id}className={`timeline-card ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'} ${isOpen?'open':''}`}><div className="timeline-marker"><span>{String(c.route_order||'').padStart(2,'0')}</span></div><div className="timeline-body"><button className="timeline-toggle"onClick={()=>setOpen(isOpen?null:c.id)}><span className="timeline-date">{c.dates||phases[c.phase]?.duration}</span><strong>{c.name}</strong><em className={`timeline-status ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'}`}>{label}</em><b>{isOpen?'-':'+'}</b></button>{isOpen&&<div className="timeline-drawer"><p>{c.summary}</p>{locs.length?<div className="timeline-locations">{locs.map(l=><a key={l.id}href={`/archive/${c.id}/${l.slug}`}><span>{l.date_text||'Story'}</span><strong>{l.name}</strong><small>{l.summary||'Open story'} ’</small></a>)}</div>:<p className="hint">Stories coming soon for this country.</p>}<a className="chapter-link"href={`/archive/${c.id}`}>Open {c.name} chapter’</a></div>}</div></article>})}</div></div></section>}
+
+function GalleryIndex(){
+  const [data] = useData();
+
+  if(!data) return <Loading />;
+
+  return (
+    <>
+      <main className="hero-surface country-hero">
+        <section className="country-hero-inner">
+          <p className="kicker">
+            <i />
+            PHOTO GALLERY
+          </p>
+
+          <h1>Journey Gallery</h1>
+
+          <p className="lead">
+            Photos and videos from every stop of the journey.
+          </p>
+        </section>
+      </main>
+
+      <section className="story-section">
+        <div className="section-inner">
+
+          {data.countries.map(country => {
+
+            const locations =
+              data.locations.filter(
+                l => l.country_id === country.id
+              );
+
+            if(!locations.length) return null;
+
+            return (
+              <div
+                key={country.id}
+                className="gallery-country"
+              >
+                <h2>{country.name}</h2>
+
+                {locations.map(location => {
+
+                  const media =
+                    data.media.filter(
+                      m => m.location_id === location.id
+                    );
+
+                  if(!media.length) return null;
+
+                  return (
+                    <div
+                      key={location.id}
+                      className="gallery-location"
+                    >
+                      <h3>{location.name}</h3>
+
+                      <div className="gallery-preview-grid">
+                        {media.slice(0,8).map(item => (
+                          {`/archive/${country.id}/${location.slug}/gallery`}
+                            {item.url}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                })}
+              </div>
+            );
+
+          })}
+
+        </div>
+      </section>
+    </>
+  );
+}
+
 function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,id),locs=data.locations.filter(l=>l.country_id===country.id);return <><main className="hero-surface country-hero"><section className="country-hero-inner"><Crumbs items={[{label:country.name}]}/><p className="kicker"><i/> COUNTRY CHAPTER</p><h1>{country.name}</h1><p className="lead">{country.summary}</p></section></main><section className="story-section"><div className="section-inner country-template"><section><p className="kicker dark"><i/> LOCATIONS VISITED</p><div className="location-grid">{locs.map(l=><a key={l.id}href={`/archive/${country.id}/${l.slug}`}><img src={l.hero_image}alt={l.name}/><div><span>{l.date_text}</span><h3>{l.name}</h3><p>{l.summary}</p></div></a>)}</div></section></div></section><BottomNav/></>}
 function LocationPage({countryId,slug,gallery=false}){const[data,refresh]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,countryId),loc=data.locations.find(l=>l.country_id===country.id&&l.slug===slug)||{},media=data.media.filter(m=>m.location_id===loc.id),comments=data.comments.filter(c=>c.location_id===loc.id);if(gallery)return <GalleryPage country={country}loc={loc}media={media}/>;return <><main className="hero-surface location-hero"><section className="detail-layout"><div><Crumbs items={[{label:country.name,href:`/archive/${country.id}`},{label:loc.name||slug}]}/><p className="kicker"><i/> LOCATION STORY</p><h1>{loc.name||slug}</h1><p className="lead">{loc.summary}</p></div><div className="detail-image">
   <b>{country.name} - {loc.date_text || ''}</b>
@@ -352,6 +444,9 @@ function Router(){
 
   if(p[0] === 'admin'){
     page = <Admin/>;
+else if(p[0] === 'gallery'){
+  page = <GalleryIndex />;
+}
   }else if(p[0] === 'archive' && p[1] && p[2] && p[3] === 'gallery'){
     page = <LocationPage countryId={p[1]} slug={p[2]} gallery />;
   }else if(p[0] === 'archive' && p[1] && p[2]){
