@@ -218,9 +218,7 @@ function SiteMenu({data}){
                 );
 
               })}
-            </div>
-        
-          </div>
+            
         </aside>
       </div>
     }
