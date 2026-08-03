@@ -439,12 +439,6 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
 <main className="hero-surface country-hero">
   <section className="country-hero-inner">
 
-    <div className="crumbs">
-      /Home</a>
-      <span> / </span>
-      <b>Photo Gallery</b>
-    </div>
-
 <Crumbs items={[{label:'Photo Gallery'}]} />
     <p className="kicker">
       <i />
