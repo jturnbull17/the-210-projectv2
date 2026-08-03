@@ -223,7 +223,7 @@
 
   padding: 22px;
 
-  box-shadow: 0 24px 80px rgba(0,0,0,.38); }
+  box-shadow: 0 24px 80px rgba(0,0,0,.38);
 }
 
 .floating-ai-head {
@@ -373,7 +373,6 @@
     bottom: 12px;
   }
 
-
 .floating-ai-panel {
   position: fixed;
 
@@ -388,6 +387,7 @@
   max-height: 95vh;
 
   overflow-y: auto;
+}
 }
 
 .hamburger-button {
