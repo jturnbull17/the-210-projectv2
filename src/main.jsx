@@ -404,12 +404,25 @@ function GalleryIndex(){
                       <h3>{location.name}</h3>
 
                       <div className="gallery-preview-grid">
-                        {media.slice(0,8).map(item => (
-                          {`/archive/${country.id}/${location.slug}/gallery`}
-                            {item.url}
-                          </a>
-                        ))}
-                      </div>
+  {media.slice(0,8).map(item => (
+    <button
+      key={item.id}
+      type="button"
+      className="gallery-image-button"
+      onClick={()=>{
+        window.location.assign(
+          '/archive/' +
+          country.id +
+          '/' +
+          location.slug +
+          '/gallery'
+        );
+      }}
+    >
+      {item.url}
+    </button>
+  ))}
+</div>
                     </div>
                   );
 
