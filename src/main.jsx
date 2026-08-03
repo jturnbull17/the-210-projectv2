@@ -186,61 +186,66 @@ function SiteMenu({data}){
             </div>
 
             <div className="site-menu-links">
-              /setOpen(false)}>
-                Home
-              </a>
 
-              <button
-                type="button"
-                onClick={goToMap}
-              >
-                Journey Map
-              </button>
+  / => setOpen(false)}
+  >
+    Home
+  </a>
 
-              <button
-                type="button"
-                onClick={goToLatestStory}
-              >
-                Latest Story
-              </button>
+  <button
+    type="button"
+    onClick={goToMap}
+  >
+    Journey Map
+  </button>
 
-              <div className="menu-country-group">
-                <span>Countries</span>
+  <button
+    type="button"
+    onClick={goToLatestStory}
+  >
+    Latest Story
+  </button>
 
-                {countries.map(function(country){
-                  const hasLocations = data.locations.some(function(location){
-                    return location.country_id === country.id;
-                  });
+  <div className="menu-country-group">
+    <span>Countries</span>
 
-                  const isAvailable =
-                    hasLocations &&
-                    (
-                      country.status === 'visited' ||
-                      country.status === 'live' ||
-                      country.id === data.settings.current_country_id
-                    );
+    {countries.map(country => {
 
-                  if(isAvailable){
-                    return (
-                      {`/archive/${country.id}`}setOpen(false)}
-                      >
-                        {String(country.route_order||'').padStart(2,'0')} / {country.name}
-                      </a>
-                    );
-                  }
+      const hasLocations =
+        data.locations.some(
+          location => location.country_id === country.id
+        );
 
-                  return (
-                    <div
-                      key={country.id}
-                      className="menu-disabled"
-                    >
-                      {String(country.route_order||'').padStart(2,'0')} / {country.name}
-                      <small>Coming soon</small>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+      const isAvailable =
+        hasLocations &&
+        (
+          country.status === 'visited' ||
+          country.status === 'live' ||
+          country.id === data.settings.current_country_id
+        );
+
+      if(isAvailable){
+        return (
+          {`/archive/${country.id}`} => setOpen(false)}
+          >
+            {String(country.route_order || '').padStart(2,'0')} / {country.name}
+          </a>
+        );
+      }
+
+      return (
+        <div
+          key={country.id}
+          className="menu-disabled"
+        >
+          {String(country.route_order || '').padStart(2,'0')} / {country.name}
+          <small>Coming soon</small>
+        </div>
+      );
+    })}
+  </div>
+
+</div>
           </aside>
         </div>
       )}
