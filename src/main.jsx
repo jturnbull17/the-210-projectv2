@@ -339,7 +339,7 @@ const loadingMessages=[
   'Reviewing published stories...',
   'Exploring the route...',
   'Finding the best answer...'
-];async function askCompanion(overrideQuestion){const question=String(overrideQuestion||query).trim();if(!question){setAiError('Ask a question first.');return}if(!hasSupabase||!supabase){setAiError('AI needs Supabase to be connected first.');return}setAiBusy(true);setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);setAiError('');try{const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});if(error)throw error;setAiAnswer(res?.answer||'I could not find a published story for that yet.')}catch(e){setAiError(e.message||'The AI companion could not answer just now.')}finally{setAiBusy(false)}}return <><main className="hero-surface"><section className="hero-layout"><div className="hero-copy"><p className="kicker"><i/> LIVE TRAVEL ARCHIVE</p><h1><span>The</span><em>210</em><span>Project</span></h1><p className="lead">Jack and Grace's live travel journal, where we will document our experiences in South America and Asia over 210 days!</p><div className="hero-actions"><button type="button" onClick={()=>goHomeTarget('ai')}>ASK ABOUT THE JOURNEY</button></div>{data.usingFallback&&<p className="setup-note">Running on fallback data. Connect Supabase to make it live.</p>}</div><RouteMap countries={data.countries}locations={data.locations}selected={selected}setSelected={setSelected}phase={phase}setPhase={setPhase}currentId={live}/></section></main><LatestStory data={data}/>
+];async function askCompanion(overrideQuestion){const question=String(overrideQuestion||query).trim();if(!question){setAiError('Ask a question first.');return}if(!hasSupabase||!supabase){setAiError('AI needs Supabase to be connected first.');return}setAiBusy(true);setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);setAiError('');try{const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});if(error)throw error;setAiAnswer(res?.answer||'I could not find a published story for that yet.')}catch(e){setAiError(e.message||'The AI companion could not answer just now.')}finally{setAiBusy(false)}}return <><main className="hero-surface"><section className="hero-layout"><div className="hero-copy"><p className="kicker"><i/> LIVE TRAVEL ARCHIVE</p><h1><span>The</span><em>210</em><span>Project</span></h1><p className="lead">Jack and Grace's live travel journal, where we will document our experiences in South America and Asia over 210 days!</p>{data.usingFallback&&<p className="setup-note">Running on fallback data. Connect Supabase to make it live.</p>}</div><RouteMap countries={data.countries}locations={data.locations}selected={selected}setSelected={setSelected}phase={phase}setPhase={setPhase}currentId={live}/></section></main><LatestStory data={data}/>
 
 <Footer/><FloatingCompanion data={data}/><BottomNav/></>}
 function getLatestStory(data){const locs=[...(data.locations||[])];if(!locs.length)return null;const current=locs.find(l=>l.country_id===data.settings.current_country_id&&l.slug===data.settings.current_location_slug);const sorted=[...locs].sort((a,b)=>String(b.created_at||b.updated_at||b.date_text||'').localeCompare(String(a.created_at||a.updated_at||a.date_text||'')));const loc=current||sorted[0]||locs[locs.length-1];const country=getCountry(data.countries,loc.country_id);return{loc,country}}
@@ -403,10 +403,13 @@ function GalleryIndex(){
                     >
                       <h3>{location.name}</h3>
 
-                      <div className="gallery-preview-grid">
-  {media.slice(0,8).map(item => (
-  {item.url}
-))}
+                     <div className="gallery-preview-grid">
+ <div className="gallery-preview-grid">
+  {media.slice(0,8).map(function(item){
+    return (
+      {item.url}
+    );
+  })}
 </div>
                     </div>
                   );
@@ -433,6 +436,7 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
       <b>Photo Gallery</b>
     </div>
 
+<Crumbs items={[{label:'Photo Gallery'}]} />
     <p className="kicker">
       <i />
       PHOTO GALLERY
