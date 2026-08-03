@@ -403,7 +403,7 @@ function GalleryIndex(){
                     >
                       <h3>{location.name}</h3>
 
-                     <div className="gallery-preview-grid">
+                  
  <div className="gallery-preview-grid">
   {media.slice(0,8).map(function(item){
     return (
