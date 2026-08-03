@@ -127,105 +127,124 @@ function SiteMenu({data}){
 
   function goToMap(){
     setOpen(false);
+
+    if(window.location.pathname !== '/'){
+      sessionStorage.setItem('homeScrollTarget','map');
+      window.location.assign('/');
+      return;
+    }
+
     document.getElementById('journey-map')?.scrollIntoView({
-      behavior:'smooth'
+      behavior:'smooth',
+      block:'start'
     });
   }
 
   function goToLatestStory(){
     setOpen(false);
+
+    if(window.location.pathname !== '/'){
+      window.location.assign('/');
+      return;
+    }
+
     document.querySelector('.latest-story-section')?.scrollIntoView({
-      behavior:'smooth'
+      behavior:'smooth',
+      block:'start'
     });
   }
 
-  return <>
-    <button
-      className="hamburger-button"
-      type="button"
-      onClick={()=>setOpen(true)}
-      aria-label="Open menu"
-    >
-      ☰
-    </button>
-
-    {open &&
-      <div
-        className="menu-overlay"
-        onClick={()=>setOpen(false)}
+  return (
+    <>
+      <button
+        className="hamburger-button"
+        type="button"
+        onClick={()=>setOpen(true)}
+        aria-label="Open menu"
       >
-        <aside
-          className="site-menu"
-          onClick={(e)=>e.stopPropagation()}
+        ☰
+      </button>
+
+      {open && (
+        <div
+          className="menu-overlay"
+          onClick={()=>setOpen(false)}
         >
-          <div className="site-menu-head">
-            <p>THE 210 PROJECT</p>
+          <aside
+            className="site-menu"
+            onClick={(e)=>e.stopPropagation()}
+          >
+            <div className="site-menu-head">
+              <p>THE 210 PROJECT</p>
 
-            <button
-              type="button"
-              onClick={()=>setOpen(false)}
-            >
-              Close
-            </button>
-          </div>
+              <button
+                type="button"
+                onClick={()=>setOpen(false)}
+              >
+                Close
+              </button>
+            </div>
 
-          <div className="site-menu-links">
+            <div className="site-menu-links">
+              /setOpen(false)}>
+                Home
+              </a>
 
-            /
-              Home
-            </a>
+              <button
+                type="button"
+                onClick={goToMap}
+              >
+                Journey Map
+              </button>
 
-            <button
-              type="button"
-              onClick={goToMap}
-            >
-              Journey Map
-            </button>
+              <button
+                type="button"
+                onClick={goToLatestStory}
+              >
+                Latest Story
+              </button>
 
-            <button
-              type="button"
-              onClick={goToLatestStory}
-            >
-              Latest Story
-            </button>
+              <div className="menu-country-group">
+                <span>Countries</span>
 
-            <div className="menu-country-group">
-              <span>Countries</span>
+                {countries.map(function(country){
+                  const hasLocations = data.locations.some(function(location){
+                    return location.country_id === country.id;
+                  });
 
-              {countries.map(country=>{
+                  const isAvailable =
+                    hasLocations &&
+                    (
+                      country.status === 'visited' ||
+                      country.status === 'live' ||
+                      country.id === data.settings.current_country_id
+                    );
 
-                const hasLocations =
-                  data.locations.some(
-                    l => l.country_id === country.id
-                  );
+                  if(isAvailable){
+                    return (
+                      {`/archive/${country.id}`}setOpen(false)}
+                      >
+                        {String(country.route_order||'').padStart(2,'0')} / {country.name}
+                      </a>
+                    );
+                  }
 
-                if(hasLocations){
                   return (
-                    {`/archive/${country.id}`}
-                      {country.name}
-                    </a>
+                    <div
+                      key={country.id}
+                      className="menu-disabled"
+                    >
+                      {String(country.route_order||'').padStart(2,'0')} / {country.name}
+                      <small>Coming soon</small>
+                    </div>
                   );
-                }
-
-                return (
-                  <div
-                    key={country.id}
-                    className="menu-disabled"
-                  >
-                    {country.name}
-                    <small>Coming soon</small>
-                  </div>
-                );
-
-              })}
-            
-        </aside>
-      </div>
-    }
-
-  </>;
-}
-
+                })}
+              </div>
+            </div>
+          </aside>
+        </div>
+      )}
+   
 function Home(){const[data]=useData();const[query,setQuery]=useState('What changed in Peru?');const[aiAnswer,setAiAnswer]=useState('Ask me anything about the journey and I will answer using the published archive.');const[aiBusy,setAiBusy]=useState(false);const[aiError,setAiError]=useState('');const[loadingMessage,setLoadingMessage]=useState('Checking the journal...');const[phase,setPhase]=useState('phase1');const[selected,setSelected]=useState(null);useEffect(()=>{if(data&&!selected){const startPhase=data.settings.default_phase||'phase1';const current=getCountry(data.countries,data.settings.current_country_id);const initial=current.phase===startPhase?current:(byPhase(data.countries,startPhase)[0]||current);setSelected(initial);setPhase(startPhase)}},[data,selected]);useEffect(()=>{if(data&&selected){const target=sessionStorage.getItem('homeScrollTarget');if(target)scrollToHomeTarget(target)}},[data,selected]);if(!data||!selected)return <Loading/>;const menu = <SiteMenu data={data} />;const live=data.settings.current_country_id;const currentCountry=getCountry(data.countries,live)||selected;const liveLocation=(data.locations||[]).find(function(location){return location.is_live===true});const currentCountryName=currentCountry?.name||'the current country';const currentLocationName=liveLocation?.name||currentCountry?.current_location||'the latest stop';const suggestedQuestions = [
   'Where are Jack and Grace now?',
   'What were the highlights in ' + currentCountryName + '?',
