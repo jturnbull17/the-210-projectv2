@@ -213,7 +213,10 @@
   bottom: 24px;
 
   width: min(760px, calc(100vw - 32px));
-  max-height: calc(120vh - 48px);
+
+  height: 95vh;
+  max-height: 95vh;
+
   overflow-y: auto;
 
   background: #092a23;
