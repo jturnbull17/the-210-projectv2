@@ -405,23 +405,8 @@ function GalleryIndex(){
 
                       <div className="gallery-preview-grid">
   {media.slice(0,8).map(item => (
-    <button
-      key={item.id}
-      type="button"
-      className="gallery-image-button"
-      onClick={()=>{
-        window.location.assign(
-          '/archive/' +
-          country.id +
-          '/' +
-          location.slug +
-          '/gallery'
-        );
-      }}
-    >
-      {item.url}
-    </button>
-  ))}
+  {item.url}
+))}
 </div>
                     </div>
                   );
@@ -438,7 +423,30 @@ function GalleryIndex(){
   );
 }
 
-function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,id),locs=data.locations.filter(l=>l.country_id===country.id);return <><main className="hero-surface country-hero"><section className="country-hero-inner"><Crumbs items={[{label:country.name}]}/><p className="kicker"><i/> COUNTRY CHAPTER</p><h1>{country.name}</h1><p className="lead">{country.summary}</p></section></main><section className="story-section"><div className="section-inner country-template"><section><p className="kicker dark"><i/> LOCATIONS VISITED</p><div className="location-grid">{locs.map(l=><a key={l.id}href={`/archive/${country.id}/${l.slug}`}><img src={l.hero_image}alt={l.name}/><div><span>{l.date_text}</span><h3>{l.name}</h3><p>{l.summary}</p></div></a>)}</div></section></div></section><BottomNav/></>}
+function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,id),locs=data.locations.filter(l=>l.country_id===country.id);return <>
+<main className="hero-surface country-hero">
+  <section className="country-hero-inner">
+
+    <div className="crumbs">
+      /Home</a>
+      <span> / </span>
+      <b>Photo Gallery</b>
+    </div>
+
+    <p className="kicker">
+      <i />
+      PHOTO GALLERY
+    </p>
+
+    <h1>Journey Gallery</h1>
+
+    <p className="lead">
+      Browse every photo and video from the journey, organised by country and location.
+    </p>
+
+  </section>
+</main>
+<section className="story-section"><div className="section-inner country-template"><section><p className="kicker dark"><i/> LOCATIONS VISITED</p><div className="location-grid">{locs.map(l=><a key={l.id}href={`/archive/${country.id}/${l.slug}`}><img src={l.hero_image}alt={l.name}/><div><span>{l.date_text}</span><h3>{l.name}</h3><p>{l.summary}</p></div></a>)}</div></section></div></section><BottomNav/></>}
 function LocationPage({countryId,slug,gallery=false}){const[data,refresh]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,countryId),loc=data.locations.find(l=>l.country_id===country.id&&l.slug===slug)||{},media=data.media.filter(m=>m.location_id===loc.id),comments=data.comments.filter(c=>c.location_id===loc.id);if(gallery)return <GalleryPage country={country}loc={loc}media={media}/>;return <><main className="hero-surface location-hero"><section className="detail-layout"><div><Crumbs items={[{label:country.name,href:`/archive/${country.id}`},{label:loc.name||slug}]}/><p className="kicker"><i/> LOCATION STORY</p><h1>{loc.name||slug}</h1><p className="lead">{loc.summary}</p></div><div className="detail-image">
   <b>{country.name} - {loc.date_text || ''}</b>
 </div>
