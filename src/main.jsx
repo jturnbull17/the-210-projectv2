@@ -354,18 +354,22 @@ function GalleryIndex(){
   return (
     <>
       <main className="hero-surface country-hero">
-        <section className="country-hero-inner">
-          <p className="kicker">
-            <i />
-            PHOTO GALLERY
-          </p>
+       <section className="country-hero-inner">
 
-          <h1>Journey Gallery</h1>
+  <Crumbs items={[{label:'Photo Gallery'}]} />
 
-          <p className="lead">
-            Photos and videos from every stop of the journey.
-          </p>
-        </section>
+  <p className="kicker">
+    <i />
+    PHOTO GALLERY
+  </p>
+
+  <h1>Journey Gallery</h1>
+
+  <p className="lead">
+    Photos and videos from every stop of the journey.
+  </p>
+
+</section>
       </main>
 
       <section className="story-section">
@@ -405,7 +409,16 @@ function GalleryIndex(){
 
                   
 <div className="gallery-preview-grid">
-  <p>{media.length} photos</p>
+  {media.slice(0,8).map(function(item){
+    return React.createElement(
+      'img',
+      {
+        key: item.id,
+        src: item.url,
+        alt: location.name
+      }
+    );
+  })}
 </div>
                     </div>
                   );
