@@ -404,12 +404,8 @@ function GalleryIndex(){
                       <h3>{location.name}</h3>
 
                   
- <div className="gallery-preview-grid">
-  {media.slice(0,8).map(function(item){
-    return (
-      {item.url}
-    );
-  })}
+<div className="gallery-preview-grid">
+  <p>{media.length} photos</p>
 </div>
                     </div>
                   );
