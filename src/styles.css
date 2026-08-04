@@ -759,3 +759,9 @@ margin-top:26px;
     right:4px;
   }
 }
+
+.gallery-lightbox-count{
+  margin-top:8px;
+  font-size:12px;
+  opacity:.75;
+}
