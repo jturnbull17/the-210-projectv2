@@ -88,7 +88,7 @@ function FloatingCompanion({data}){
             <p>THE 210 COMPANION</p>
             <h2>Ask about the journey.</h2>
           </div>
-          <button type="button" onClick={()=>setOpen(false)}>Close</button>
+          <button type="button" onClick={()=>setOpen(false)}>x</button>
         </div>
 
         <article className="floating-ai-answer">
@@ -283,7 +283,7 @@ function goToLatestStory(){
                     setOpen(false);
                   }
                 },
-                'Close'
+                'x'
               )
             ),
 
@@ -947,7 +947,7 @@ function GalleryPage({country,loc,media}){
                   setActiveIndex(null);
                 }
               },
-              'Close'
+              'x'
             ),
 
             React.createElement(
