@@ -149,7 +149,7 @@ function SiteMenu({data}){
     });
   }
 
-  function goToLatestStory(){
+function goToLatestStory(){
   setOpen(false);
 
   const latest =
@@ -169,12 +169,6 @@ function SiteMenu({data}){
     latest.slug
   );
 }
-
-    document.querySelector('.latest-story-section')?.scrollIntoView({
-      behavior:'smooth',
-      block:'start'
-    });
-  }
 
   function goToCountry(countryId){
     setOpen(false);
