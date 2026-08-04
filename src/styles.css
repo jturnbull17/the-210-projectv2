@@ -352,6 +352,7 @@
 
 .floating-ask-bar {
   display: flex;
+margin-top:26px;
   align-items: center;
   gap: 10px;
 
