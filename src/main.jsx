@@ -10,7 +10,7 @@ function StoryBody({text,media}){const parts=String(text||'').split(/(\[\[(?:pho
 function RouteMap({countries,locations,selected,setSelected,phase,setPhase,currentId}){const shown=byPhase(countries,phase),pos=phase==='phase1'?{colombia:{left:'43%',top:'16%'},peru:{left:'34%',top:'39%'},argentina:{left:'48%',top:'76%'},brazil:{left:'70%',top:'40%'}}:{vietnam:{left:'31%',top:'66%'},'south-korea':{left:'63%',top:'32%'},japan:{left:'82%',top:'38%'},'hong-kong':{left:'53%',top:'55%'},singapore:{left:'41%',top:'80%'}};const locs=locations.filter(l=>l.country_id===selected?.id);return <div className="route-panel"id="journey-map"><div className="phase-tabs"><button className={phase==='phase1'?'on':''}onClick={()=>{setPhase('phase1');setSelected(byPhase(countries,'phase1')[0])}}>Phase 1</button><button className={phase==='phase2'?'on':''}onClick={()=>{setPhase('phase2');setSelected(byPhase(countries,'phase2')[0])}}>Phase 2</button></div><div className="panel-head"><span><Compass size={13}/> INTERACTIVE ROUTE</span><span>{phases[phase].duration}</span></div><div className="map-area"><svg className="route-svg"viewBox="0 0 100 100"preserveAspectRatio="none">{phase==='phase1'?<><path className="land"d="M47 5 C58 7 67 14 70 25 C73 37 66 46 61 55 C57 62 59 68 54 75 C50 83 43 98 37 95 C32 92 35 79 31 69 C27 58 21 47 25 37 C29 28 33 22 34 13 C35 7 40 4 47 5 Z"/><path className="trail"d="M43 16 C36 25 33 34 34 39 C39 52 42 64 48 76 C56 62 65 48 70 40"/></>:<><path className="land asia"d="M14 35 C22 20 38 14 51 17 C61 9 78 14 86 27 C96 43 86 56 72 57 C65 64 60 70 51 72 C44 82 30 84 20 75 C10 65 7 48 14 35 Z M74 27 C86 29 94 39 93 50 C87 44 81 37 74 27 Z M49 70 C54 77 54 86 47 92 C42 83 43 76 49 70 Z"/><path className="trail"d="M31 66 C42 55 52 44 63 31 C70 31 78 35 82 39 C72 44 61 49 54 55 C47 63 43 73 41 80"/></>}</svg>{shown.map((c,i)=><button key={c.id}onClick={()=>setSelected(c)}className={markerClass(c,selected,currentId)}style={pos[c.id]||{left:`${25+i*12}%`,top:'50%'}}><span>{c.status==='visited'?'✓':String(c.route_order).padStart(2,'0')}</span></button>)}</div><div className="map-key"><span className="live-dot"></span> Live <span className="visited-dot"></span> Completed <span className="selected-dot"></span> Selected</div><div className="map-country-strip">{shown.map((c,i) =><button key={c.id}onClick={()=>setSelected(c)}className={`${selected?.id===c.id?'selected':''} ${c.id===currentId||c.status==='live'?'current':''} ${c.status==='visited'?'visited':''}`}><span>{c.status==='visited'?'Completed':String(c.route_order||i+1).padStart(2,'0')}</span><b>{c.name}</b><em>{statusLabel(c,currentId)}</em></button>)}</div><div className="map-country-panel"><p>{statusLabel(selected,currentId)}</p><h3>{selected?.name}</h3>
 
 <div className="panel-actions">
-  <a href={`/archive/${selected?.id}`}> {selected?.name} Blogs
+  <a href={`/archive/${selected?.id}`}>Open {selected?.name} Blogs
   </a>
 </div>
 
@@ -378,103 +378,358 @@ function ArchiveTimeline({data}){const[open,setOpen]=useState(data.settings.curr
 
 function GalleryIndex(){
   const [data] = useData();
+  const [activeIndex,setActiveIndex] = useState(null);
 
-  if(!data) return <Loading />;
+  const galleryItems = [];
 
-  return (
-    <>
-      <main className="hero-surface country-hero">
-       <section className="country-hero-inner">
+  if(data){
+    (data.countries || []).forEach(function(country){
+      (data.locations || [])
+        .filter(function(location){
+          return location.country_id === country.id;
+        })
+        .forEach(function(location){
+          (data.media || [])
+            .filter(function(media){
+              return media.location_id === location.id;
+            })
+            .forEach(function(media){
+              galleryItems.push({
+                id: media.id,
+                url: media.url,
+                caption: media.caption || '',
+                media_type: media.media_type,
+                countryName: country.name,
+                locationName: location.name
+              });
+            });
+        });
+    });
+  }
 
-  <Crumbs items={[{label:'Photo Gallery'}]} />
+  useEffect(function(){
+    function handleKey(event){
+      if(activeIndex === null) return;
 
-  <p className="kicker">
-    <i />
-    PHOTO GALLERY
-  </p>
+      if(event.key === 'Escape'){
+        setActiveIndex(null);
+      }
 
-  <h1>Journey Gallery</h1>
+      if(event.key === 'ArrowRight'){
+        setActiveIndex(function(current){
+          return (current + 1) % galleryItems.length;
+        });
+      }
 
-  <p className="lead">
-    Photos and videos from every stop of the journey.
-  </p>
+      if(event.key === 'ArrowLeft'){
+        setActiveIndex(function(current){
+          return (current - 1 + galleryItems.length) % galleryItems.length;
+        });
+      }
+    }
 
-</section>
-      </main>
+    window.addEventListener('keydown', handleKey);
 
-      <section className="story-section">
-        <div className="section-inner">
+    return function(){
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [activeIndex, galleryItems.length]);
 
-          {data.countries.map(country => {
+  if(!data) return React.createElement(Loading, null);
 
-            const locations =
-              data.locations.filter(
-                l => l.country_id === country.id
-              );
+  const activeItem =
+    activeIndex !== null
+      ? galleryItems[activeIndex]
+      : null;
 
-            if(!locations.length) return null;
+  function openItem(itemId){
+    const index = galleryItems.findIndex(function(item){
+      return item.id === itemId;
+    });
 
-            return (
-              <div
-                key={country.id}
-                className="gallery-country"
-              >
-                <h2>{country.name}</h2>
+    if(index >= 0){
+      setActiveIndex(index);
+    }
+  }
 
-                {locations.map(location => {
+  function previousItem(){
+    setActiveIndex(function(current){
+      return (current - 1 + galleryItems.length) % galleryItems.length;
+    });
+  }
 
-                  const media =
-                    data.media.filter(
-                      m => m.location_id === location.id
-                    );
+  function nextItem(){
+    setActiveIndex(function(current){
+      return (current + 1) % galleryItems.length;
+    });
+  }
 
-                  if(!media.length) return null;
+  return React.createElement(
+    React.Fragment,
+    null,
 
-                  return (
-                    <div
-                      key={location.id}
-                      className="gallery-location"
-                    >
-                      <h3>{location.name}</h3>
-
-                  
-<div className="gallery-preview-grid">
-  {media.slice(0,8).map(function(item){
-    return React.createElement(
-      'figure',
+    React.createElement(
+      'main',
       {
-        key: item.id
+        className: 'hero-surface country-hero'
       },
-
       React.createElement(
-        'img',
+        'section',
         {
-          src: item.url,
-          alt: item.caption || location.name
-        }
-      ),
+          className: 'country-hero-inner'
+        },
 
-      React.createElement(
-        'figcaption',
-        null,
-        item.caption || ''
+        React.createElement(Crumbs, {
+          items: [{ label: 'Photo Gallery' }]
+        }),
+
+        React.createElement(
+          'p',
+          {
+            className: 'kicker'
+          },
+          React.createElement('i', null),
+          ' PHOTO GALLERY'
+        ),
+
+        React.createElement(
+          'h1',
+          null,
+          'Journey Gallery'
+        ),
+
+        React.createElement(
+          'p',
+          {
+            className: 'lead'
+          },
+          'Browse every photo and video from the journey, organised by country and location.'
+        )
       )
-    );
-  })}
-</div>
+    ),
 
-                    </div>
-                  );
+    React.createElement(
+      'section',
+      {
+        className: 'story-section'
+      },
+      React.createElement(
+        'div',
+        {
+          className: 'section-inner'
+        },
 
-                })}
-              </div>
-            );
+        (data.countries || []).map(function(country){
+          const locations = (data.locations || []).filter(function(location){
+            return location.country_id === country.id;
+          });
 
-          })}
+          const locationsWithMedia = locations.filter(function(location){
+            return (data.media || []).some(function(media){
+              return media.location_id === location.id;
+            });
+          });
 
-        </div>
-      </section>
-    </>
+          if(!locationsWithMedia.length) return null;
+
+          return React.createElement(
+            'div',
+            {
+              key: country.id,
+              className: 'gallery-country'
+            },
+
+            React.createElement(
+              'h2',
+              null,
+              country.name
+            ),
+
+            locationsWithMedia.map(function(location){
+              const media = (data.media || []).filter(function(item){
+                return item.location_id === location.id;
+              });
+
+              return React.createElement(
+                'div',
+                {
+                  key: location.id,
+                  className: 'gallery-location'
+                },
+
+                React.createElement(
+                  'h3',
+                  null,
+                  location.name
+                ),
+
+                React.createElement(
+                  'div',
+                  {
+                    className: 'gallery-preview-grid'
+                  },
+
+                  media.slice(0,8).map(function(item){
+                    const isVideo =
+                      item.media_type === 'video' ||
+                      /\.(mp4|webm|mov)(\?|$)/i.test(item.url);
+
+                    return React.createElement(
+                      'button',
+                      {
+                        key: item.id,
+                        type: 'button',
+                        className: 'gallery-thumb-button',
+                        onClick: function(){
+                          openItem(item.id);
+                        }
+                      },
+
+                      React.createElement(
+                        'figure',
+                        null,
+
+                        isVideo
+                          ? React.createElement(
+                              'video',
+                              {
+                                src: item.url,
+                                muted: true,
+                                playsInline: true,
+                                preload: 'metadata'
+                              }
+                            )
+                          : React.createElement(
+                              'img',
+                              {
+                                src: item.url,
+                                alt: item.caption || location.name
+                              }
+                            ),
+
+                        item.caption
+                          ? React.createElement(
+                              'figcaption',
+                              null,
+                              item.caption
+                            )
+                          : null
+                      )
+                    );
+                  })
+                )
+              );
+            })
+          );
+        })
+      )
+    ),
+
+    activeItem
+      ? React.createElement(
+          'div',
+          {
+            className: 'gallery-lightbox',
+            onClick: function(){
+              setActiveIndex(null);
+            }
+          },
+
+          React.createElement(
+            'section',
+            {
+              className: 'gallery-lightbox-card',
+              onClick: function(event){
+                event.stopPropagation();
+              }
+            },
+
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'gallery-lightbox-close',
+                onClick: function(){
+                  setActiveIndex(null);
+                }
+              },
+              '×'
+            ),
+
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'gallery-lightbox-arrow gallery-lightbox-prev',
+                onClick: previousItem
+              },
+              '‹'
+            ),
+
+            React.createElement(
+              'div',
+              {
+                className: 'gallery-lightbox-media'
+              },
+
+              activeItem.media_type === 'video' ||
+              /\.(mp4|webm|mov)(\?|$)/i.test(activeItem.url)
+                ? React.createElement(
+                    'video',
+                    {
+                      src: activeItem.url,
+                      controls: true,
+                      playsInline: true
+                    }
+                  )
+                : React.createElement(
+                    'img',
+                    {
+                      src: activeItem.url,
+                      alt: activeItem.caption || activeItem.locationName
+                    }
+                  )
+            ),
+
+            React.createElement(
+              'button',
+              {
+                type: 'button',
+                className: 'gallery-lightbox-arrow gallery-lightbox-next',
+                onClick: nextItem
+              },
+              '›'
+            ),
+
+            React.createElement(
+              'div',
+              {
+                className: 'gallery-lightbox-caption'
+              },
+
+              React.createElement(
+                'strong',
+                null,
+                activeItem.locationName
+              ),
+
+              React.createElement(
+                'span',
+                null,
+                activeItem.countryName
+              ),
+
+              activeItem.caption
+                ? React.createElement(
+                    'p',
+                    null,
+                    activeItem.caption
+                  )
+                : null
+            )
+          )
+        )
+      : null
   );
 }
 
