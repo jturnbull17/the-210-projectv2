@@ -411,15 +411,28 @@ function GalleryIndex(){
 <div className="gallery-preview-grid">
   {media.slice(0,8).map(function(item){
     return React.createElement(
-      'img',
+      'figure',
       {
-        key: item.id,
-        src: item.url,
-        alt: location.name
-      }
+        key: item.id
+      },
+
+      React.createElement(
+        'img',
+        {
+          src: item.url,
+          alt: item.caption || location.name
+        }
+      ),
+
+      React.createElement(
+        'figcaption',
+        null,
+        item.caption || ''
+      )
     );
   })}
 </div>
+
                     </div>
                   );
 

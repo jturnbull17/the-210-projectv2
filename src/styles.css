@@ -214,8 +214,8 @@
 
   width: min(760px, calc(100vw - 32px));
 
-  height: 75vh;
-  max-height: 75vh;
+  height: 95vh;
+  max-height: 95vh;
 
   overflow-y: auto;
 
@@ -386,8 +386,8 @@
 
   width: min(520px, calc(100vw - 24px));
 
-  height: 95vh;
-  max-height: 95vh;
+  height: 75vh;
+  max-height: 75vh;
 
   overflow-y: auto;
 }
@@ -530,4 +530,20 @@
   aspect-ratio:1;
   object-fit:cover;
   border-radius:18px;
+}
+
+
+.gallery-preview-grid figure{
+  margin:0;
+}
+
+.gallery-preview-grid figcaption{
+  margin-top:8px;
+
+  font-size:12px;
+  line-height:1.4;
+
+  color:rgba(17,37,31,.75);
+
+  text-align:center;
 }
