@@ -82,7 +82,7 @@ function FloatingCompanion({data}){
     {open&&<div className="floating-ai-overlay">
       <div className="floating-ai-backdrop" onClick={()=>setOpen(false)}></div>
 
-      <section className="floating-ai-panel">
+     <section className="floating-ai-panel">
   <div className="floating-ai-head">
     <div>
       <p>THE 210 COMPANION</p>
@@ -149,11 +149,9 @@ function FloatingCompanion({data}){
         );
       })}
     </div>
- 
-      </section>
-    </div>}
-  </>;
-}
+  )}
+
+</section>
 
 function SiteMenu({data}){
   const [open,setOpen] = useState(false);
