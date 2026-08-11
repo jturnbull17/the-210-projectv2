@@ -354,16 +354,11 @@
   align-items: center;
   gap: 10px;
 
-  
+  background: var(--cream);
 
   padding: 8px;
 
   border-radius: 18px;
-  
-  position:sticky;
-  bottom:0;
-  background:#092a23;
-
 }
 
 .floating-ask-bar svg {
@@ -767,29 +762,4 @@
   margin-top:8px;
   font-size:12px;
   opacity:.75;
-}
-
-.floating-chat-history{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:20px;
-}
-
-.chat-user{
-  align-self:flex-end;
-  background:var(--copper);
-  color:#fff;
-  padding:12px 16px;
-  border-radius:18px;
-  max-width:80%;
-}
-
-.chat-ai{
-  align-self:flex-start;
-  background:var(--cream2);
-  color:var(--ink);
-  padding:12px 16px;
-  border-radius:18px;
-  max-width:80%;
 }
