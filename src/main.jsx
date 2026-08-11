@@ -97,17 +97,22 @@ function FloatingCompanion({data}){
     </button>
   </div>
 
-  <article className="floating-ai-answer">
-    <h3>
-      {busy ? loadingMessage : answer}
-    </h3>
+  <div className="floating-chat-history">
 
-    {error && (
-      <small className="ai-error">
-        {error}
-      </small>
-    )}
-  </article>
+  {messages.map((message,index)=>(
+    <div
+      key={index}
+      className={
+        message.type === 'user'
+          ? 'chat-user'
+          : 'chat-ai'
+      }
+    >
+      {message.text}
+    </div>
+  ))}
+
+</div>
 
   <div className="floating-ask-bar">
     <Search size={15}/>
