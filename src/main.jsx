@@ -152,6 +152,9 @@ function FloatingCompanion({data}){
   )}
 
 </section>
+    </div>}
+  </>;
+}
 
 function SiteMenu({data}){
   const [open,setOpen] = useState(false);
