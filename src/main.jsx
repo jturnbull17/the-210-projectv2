@@ -18,7 +18,7 @@ function RouteMap({countries,locations,selected,setSelected,phase,setPhase,curre
 
 function FloatingCompanion({data}){
   const[open,setOpen]=useState(false);
-  const[query,setQuery]=useState('Where are Jack and Grace now?');
+  const[query,setQuery]=useState('');
   const[answer,setAnswer]=useState('Ask anything about places, stories, highlights and moments from the journey.');
   const[busy,setBusy]=useState(false);
   const[error,setError]=useState('');
@@ -83,42 +83,73 @@ function FloatingCompanion({data}){
       <div className="floating-ai-backdrop" onClick={()=>setOpen(false)}></div>
 
       <section className="floating-ai-panel">
-        <div className="floating-ai-head">
-          <div>
-            <p>THE 210 COMPANION</p>
-            <h2>Ask about the journey.</h2>
-          </div>
-          <button type="button" onClick={()=>setOpen(false)}>x</button>
-        </div>
+  <div className="floating-ai-head">
+    <div>
+      <p>THE 210 COMPANION</p>
+      <h2>Ask about the journey.</h2>
+    </div>
 
-        <article className="floating-ai-answer">
-          <p>RESPONSE</p>
-          <h3>{busy?loadingMessage:answer}</h3>
-          {error&&<small className="ai-error">{error}</small>}
-        </article>
+    <button
+      type="button"
+      onClick={()=>setOpen(false)}
+    >
+      ×
+    </button>
+  </div>
 
-        
+  <article className="floating-ai-answer">
+    <h3>
+      {busy ? loadingMessage : answer}
+    </h3>
 
-        <div className="floating-ask-bar">
-          <Search size={15}/>
-          <input
-            value={query}
-            placeholder="Ask about a place, story or highlight..."
-            onChange={e=>setQuery(e.target.value)}
-            onKeyDown={e=>{if(e.key==='Enter')askCompanion()}}
-          />
-          <button type="button" onClick={()=>askCompanion()} disabled={busy}>
-            {busy?'...':'>'}
+    {error && (
+      <small className="ai-error">
+        {error}
+      </small>
+    )}
+  </article>
+
+  <div className="floating-ask-bar">
+    <Search size={15}/>
+
+    <input
+      value={query}
+      placeholder="Ask about the journey..."
+      onChange={e=>setQuery(e.target.value)}
+      onKeyDown={e=>{
+        if(e.key==='Enter') askCompanion();
+      }}
+    />
+
+    <button
+      type="button"
+      onClick={()=>askCompanion()}
+      disabled={busy}
+    >
+      {busy ? '...' : '>'}
+    </button>
+  </div>
+
+  {answer === 'Ask anything about places, stories, highlights and moments from the journey.' && (
+    <div className="floating-suggested-questions">
+      <p>Try asking</p>
+
+      {suggestedQuestions.map(function(item){
+        return (
+          <button
+            type="button"
+            key={item}
+            onClick={()=>{
+              setQuery(item);
+              askCompanion(item);
+            }}
+          >
+            {item}
           </button>
-        </div>
-
-<div className="floating-suggested-questions">
-          <p>Try asking</p>
-          {suggestedQuestions.map(function(item){
-            return <button type="button" key={item} onClick={()=>{setQuery(item);askCompanion(item)}}>{item}</button>
-          })}
-        </div>
-
+        );
+      })}
+    </div>
+ 
       </section>
     </div>}
   </>;
