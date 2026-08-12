@@ -453,23 +453,15 @@ if (isCountryQuestion) {
   });
 }
 
-    if (isLocationQuestion)) {
-      const matchedLocation = matchingLocations[0];
-      const matchedCountry = countries.find(function(country) {
-        return country.id === matchedLocation.country_id;
-      });
 
-      return jsonResponse({
-        answer:
-          matchedLocation.name +
-          (matchedCountry ? ", " + matchedCountry.name : "") +
-          ": " +
-          compact(matchedLocation.summary, 350) +
-          (matchedLocation.blog
-            ? "\n\n" + compact(matchedLocation.blog, 1200)
-            : "")
-      });
-    }
+if (isLocationQuestion) {
+  const matchedLocation = matchingLocations[0];
+
+  return jsonResponse({
+    answer: "LOCATION HANDLER: " + matchedLocation.name
+  });
+}
+
 
     if (
       matchingCountries.length === 1 &&
