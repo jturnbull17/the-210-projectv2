@@ -235,6 +235,14 @@ Deno.serve(async function(req) {
         return item.id === location.country_id;
       });
 
+return jsonResponse({
+  answer:
+    "Countries=" +
+    matchingCountries.length +
+    ", Locations=" +
+    matchingLocations.length
+});
+
 const isCountryQuestion =
   matchingCountries.length === 1 &&
   matchingLocations.length === 0;
