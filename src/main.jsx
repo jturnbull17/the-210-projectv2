@@ -17,13 +17,15 @@ function RouteMap({countries,locations,selected,setSelected,phase,setPhase,curre
 </div></div>}
 
 function FloatingCompanion({data}){
-  const[query,setQuery]=useState('');
-const[messages,setMessages]=useState([]);
-const[busy,setBusy]=useState(false);
-const[error,setError]=useState('');
-const[loadingMessage,setLoadingMessage]=useState('Checking the journal...');
+  const[open,setOpen]=useState(false);
 
-const welcomeText='Ask anything about places, stories, highlights and moments from the journey.';
+  const[query,setQuery]=useState('');
+  const[messages,setMessages]=useState([]);
+  const[busy,setBusy]=useState(false);
+  const[error,setError]=useState('');
+  const[loadingMessage,setLoadingMessage]=useState('Checking the journal...');
+
+  const welcomeText='Ask anything about places, stories, highlights and moments from the journey.';
 
   if(!data)return null;
 
