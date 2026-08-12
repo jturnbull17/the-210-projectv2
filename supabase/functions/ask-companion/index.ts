@@ -236,25 +236,38 @@ Deno.serve(async function(req) {
       return questionMentionsCountry(questionLower, country);
     });
 
-  const matchingLocations = locations.filter(function(location) {
-  const country = countries.find(function(item) {
-    return item.id === location.country_id;
-  });
-
-  return (
-    questionMentionsLocation(questionLower, location) ||
-    (country && questionMentionsCountry(questionLower, country))
+ const directLocationMatches = locations.filter(function(location){
+  return questionMentionsLocation(
+    questionLower,
+    location
   );
 });
 
+const matchingLocations =
+  directLocationMatches.length > 0
+    ? directLocationMatches
+    : locations.filter(function(location){
+        const country = countries.find(function(item){
+          return item.id === location.country_id;
+        });
 
+        return (
+          country &&
+          questionMentionsCountry(
+            questionLower,
+            country
+          )
+        );
+      });
+
+
+
+const isLocationQuestion =
+  matchingLocations.length > 0;
 
 const isCountryQuestion =
   matchingCountries.length === 1 &&
-  matchingLocations.length === 0;
-
-const isLocationQuestion =
-  matchingLocations.length === 1;
+  !isLocationQuestion;
 
       return (
         questionMentionsLocation(questionLower, location) ||
@@ -475,6 +488,12 @@ if (isLocationQuestion) {
   const matchedCountry = countries.find(function(country) {
     return country.id === matchedLocation.country_id;
   });
+
+  return jsonResponse({
+    answer:
+      textValue(matchedLocation.summary)
+  });
+}
 
   const highlights = normaliseHighlights(
     matchedLocation.highlights
