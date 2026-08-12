@@ -22,7 +22,10 @@ function textValue(value) {
 }
 
 function lower(value) {
-  return String(value || "").toLowerCase();
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 function compact(value, maxLength) {
