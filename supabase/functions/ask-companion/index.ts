@@ -263,43 +263,15 @@ const matchingLocations =
 
 
 const isLocationQuestion =
-  matchingLocations.length > 0;
+  directLocationMatches.length > 0;
 
 const isCountryQuestion =
   matchingCountries.length === 1 &&
-  !isLocationQuestion;
+  directLocationMatches.length === 0;
 
 
 
-if (wantsHighlights(questionLower) && matchingCountries.length === 1) {
-  const matchedCountry = matchingCountries[0];
 
-  const countryLocations = locations.filter(function(location) {
-    return location.country_id === matchedCountry.id;
-  });
-
-  let highlights = normaliseHighlights(matchedCountry.highlights);
-
-  countryLocations.forEach(function(location) {
-    highlights = highlights.concat(
-      normaliseHighlights(location.highlights)
-    );
-  });
-
-  const uniqueHighlights = highlights.filter(function(item, index) {
-    return highlights.indexOf(item) === index;
-  });
-
-  if (uniqueHighlights.length > 0) {
-    return jsonResponse({
-      answer:
-        "Highlights from " +
-        matchedCountry.name +
-        ": " +
-        uniqueHighlights.join(", ")
-    });
-  }
-}
     /*
       FREE ANSWERS.
       These do not call Gemini, so they cost nothing.
@@ -408,6 +380,39 @@ if (wantsHighlights(questionLower) && matchingCountries.length === 1) {
   }
 }
 
+if (
+  matchingCountries.length === 1 &&
+  questionLower.includes("what did")
+) {
+  const matchedCountry = matchingCountries[0];
+
+  const countryLocations = locations.filter(function(location) {
+    return location.country_id === matchedCountry.id;
+  });
+
+  return jsonResponse({
+    answer:
+      "During their time in " +
+      matchedCountry.name +
+      ", Jack and Grace visited " +
+      countryLocations
+        .map(function(location) {
+          return location.name;
+        })
+        .join(", ") +
+      ".\n\n" +
+      countryLocations
+        .map(function(location) {
+          return (
+            location.name +
+            ": " +
+            textValue(location.summary)
+          );
+        })
+        .join("\n\n")
+  });
+}
+
 if (isCountryQuestion) {
   const matchedCountry = matchingCountries[0];
 
@@ -421,25 +426,29 @@ if (isCountryQuestion) {
     })
     .filter(Boolean);
 
-  const summaries = countryLocations
-    .map(function(location) {
-      return (
-        location.name +
-        ": " +
-        textValue(location.summary)
-      );
-    })
-    .filter(Boolean);
+ const summaries = countryLocations
+  .map(function(location) {
+    return (
+      location.name +
+      ": " +
+      textValue(location.summary) +
+      "\n" +
+      compact(location.blog, 250)
+    );
+  })
+  .filter(Boolean);
 
   return jsonResponse({
-    answer:
-      "During their time in " +
-      matchedCountry.name +
-      ", Jack and Grace visited " +
-      locationNames.join(", ") +
-      ".\n\n" +
-      summaries.slice(0, 8).join("\n\n")
-  });
+  answer:
+    "During their time in " +
+    matchedLocation.name +
+    (matchedCountry ? ", " + matchedCountry.name : "") +
+    ", Jack and Grace experienced the following:\n\n" +
+    textValue(matchedLocation.summary) +
+    (matchedLocation.blog
+      ? "\n\n" + compact(matchedLocation.blog, 600)
+      : "")
+});
 }
 
 if (isLocationQuestion) {
