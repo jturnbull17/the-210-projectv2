@@ -431,8 +431,9 @@ if (isCountryQuestion) {
       ".\n\n" +
       summaries.slice(0,8).join("\n\n")
   });
-} {
-  const matchedCountry = matchingCountries[0];
+}
+
+{const matchedCountry = matchingCountries[0];
 
   const countryLocations = locations.filter(function(location) {
     return location.country_id === matchedCountry.id;
@@ -470,18 +471,31 @@ if (isCountryQuestion) {
 
 if (isLocationQuestion) {
   const matchedLocation = matchingLocations[0];
+
   const matchedCountry = countries.find(function(country) {
     return country.id === matchedLocation.country_id;
   });
 
+  const highlights = normaliseHighlights(
+    matchedLocation.highlights
+  );
+
   return jsonResponse({
     answer:
+      "During their time in " +
       matchedLocation.name +
       (matchedCountry ? ", " + matchedCountry.name : "") +
-      ": " +
-      compact(matchedLocation.summary, 350) +
+      ", Jack and Grace " +
+      textValue(matchedLocation.summary) +
+
+      (highlights.length > 0
+        ? "\n\nHighlights included: " +
+          highlights.join(", ")
+        : "") +
+
       (matchedLocation.blog
-        ? "\n\n" + compact(matchedLocation.blog, 1200)
+        ? "\n\n" +
+          compact(matchedLocation.blog, 1000)
         : "")
   });
 }
