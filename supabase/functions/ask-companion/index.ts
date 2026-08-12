@@ -269,11 +269,7 @@ const isCountryQuestion =
   matchingCountries.length === 1 &&
   !isLocationQuestion;
 
-      return (
-        questionMentionsLocation(questionLower, location) ||
-        (country && questionMentionsCountry(questionLower, country))
-      );
-    });
+
 
 if (wantsHighlights(questionLower) && matchingCountries.length === 1) {
   const matchedCountry = matchingCountries[0];
@@ -442,58 +438,16 @@ if (isCountryQuestion) {
       ", Jack and Grace visited " +
       locationNames.join(", ") +
       ".\n\n" +
-      summaries.slice(0,8).join("\n\n")
+      summaries.slice(0, 8).join("\n\n")
   });
 }
-
-{const matchedCountry = matchingCountries[0];
-
-  const countryLocations = locations.filter(function(location) {
-    return location.country_id === matchedCountry.id;
-  });
-
-  const locationNames = countryLocations
-    .map(function(location) {
-      return location.name;
-    })
-    .filter(Boolean);
-
-  const summaries = countryLocations
-    .map(function(location) {
-      return (
-  location.name +
-  ": " +
-  textValue(location.summary) +
-  " " +
-  compact(location.blog, 300)
-);
-    })
-    .filter(Boolean);
-
-  return jsonResponse({
-    answer:
-  "During their time in " +
-  matchedCountry.name +
-  ", Jack and Grace travelled through " +
-  locationNames.join(", ") +
-  ".\n\n" +
-  summaries.slice(0, 8).join("\n\n")
-  });
-}
-
 
 if (isLocationQuestion) {
-  const matchedLocation = matchingLocations[0];
+  const matchedLocation = directLocationMatches[0];
 
   const matchedCountry = countries.find(function(country) {
     return country.id === matchedLocation.country_id;
   });
-
-  return jsonResponse({
-    answer:
-      textValue(matchedLocation.summary)
-  });
-}
 
   const highlights = normaliseHighlights(
     matchedLocation.highlights
@@ -504,35 +458,21 @@ if (isLocationQuestion) {
       "During their time in " +
       matchedLocation.name +
       (matchedCountry ? ", " + matchedCountry.name : "") +
-      ", Jack and Grace " +
+      ", Jack and Grace experienced the following:\n\n" +
       textValue(matchedLocation.summary) +
-
       (highlights.length > 0
         ? "\n\nHighlights included: " +
           highlights.join(", ")
-        : "") +
-
-      (matchedLocation.blog
-        ? "\n\n" +
-          compact(matchedLocation.blog, 1000)
         : "")
   });
 }
 
-    if (
-      matchingCountries.length === 1 &&
-      matchingLocations.length === 0 &&
-      wantsSummary(questionLower)
-    ) {
-      const matchedCountry = matchingCountries[0];
 
-      return jsonResponse({
-        answer:
-          matchedCountry.name +
-          ": " +
-          compact(matchedCountry.summary, 800)
-      });
-    }
+if (
+  matchingCountries.length === 1 &&
+  matchingLocations.length === 0 &&
+  wantsSummary(questionLower)
+) 
 
 if (
   matchingCountries.length === 1 &&
@@ -565,6 +505,7 @@ if (
       "."
   });
 }
+
 
 if (
   questionLower.includes("summarise their journey") ||
