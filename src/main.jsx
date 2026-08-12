@@ -120,170 +120,126 @@ async function askCompanion(overrideQuestion){
 
 
 
-  return <>
-    <button className="floating-ai-button" type="button" onClick={()=>setOpen(true)}>
-      AI
-    </button>
-
-    {open&&<div className="floating-ai-overlay">
-      <div className="floating-ai-backdrop" onClick={()=>setOpen(false)}></div>
-
-     <section className="floating-ai-panel">
-  <div className="floating-ai-head">
-  <div>
-    <p>THE 210 COMPANION</p>
-    <h2>Ask about the journey.</h2>
-  </div>
-
+return <>
   <button
+    className="floating-ai-button"
     type="button"
-    onClick={()=>setOpen(false)}
+    onClick={()=>setOpen(true)}
   >
-    ×
+    AI
   </button>
-</div>
 
-<div className="floating-chat-body">
+  {open && (
+    <div className="floating-ai-overlay">
+      <div
+        className="floating-ai-backdrop"
+        onClick={()=>setOpen(false)}
+      ></div>
 
-  {messages.length===0&&(
-    <div className="floating-ai-intro">
-      <p>{welcomeText}</p>
-
-      <div className="floating-suggested-questions">
-        <p>Try asking</p>
-
-        {suggestedQuestions.map(function(item){
-          return (
-            <button
-              type="button"
-              key={item}
-              onClick={()=>{
-                askCompanion(item);
-              }}
-            >
-              {item}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  )}
-
-  {messages.length>0&&(
-    <div className="floating-chat-messages">
-      {messages.map(function(message,index){
-        return (
-          <div
-            key={index}
-            className={message.role==='user'?'chat-message chat-user':'chat-message chat-assistant'}
-          >
-            <span>
-              {message.role==='user'?'You':'The 210 Companion'}
-            </span>
-
-            <p>
-              {message.text}
-            </p>
+      <section className="floating-ai-panel">
+        <div className="floating-ai-head">
+          <div>
+            <p>THE 210 COMPANION</p>
+            <h2>Ask about the journey.</h2>
           </div>
-        );
-      })}
 
-      {busy&&(
-        <div className="chat-message chat-assistant">
-          <span>The 210 Companion</span>
-          <p>{loadingMessage}</p>
-        </div>
-      )}
-
-      {error&&(
-        <small className="ai-error">
-          {error}
-        </small>
-      )}
-    </div>
-  )}
-
-</div>
-
-<div className="floating-ask-bar">
-  <Search size={15}/>
-
-  <input
-    value={query}
-    placeholder="Ask about the journey..."
-    onChange={e=>setQuery(e.target.value)}
-    onKeyDown={e=>{
-      if(e.key==='Enter')askCompanion();
-    }}
-  />
-
-  <button
-    type="button"
-    onClick={()=>askCompanion()}
-    disabled={busy}
-  >
-    {busy?'...':'>'}
-  </button>
-</div>
-
-  <article className="floating-ai-answer">
-    <h3>
-      {busy ? loadingMessage : answer}
-    </h3>
-
-    {error && (
-      <small className="ai-error">
-        {error}
-      </small>
-    )}
-  </article>
-
-  <div className="floating-ask-bar">
-    <Search size={15}/>
-
-    <input
-      value={query}
-      placeholder="Ask about the journey..."
-      onChange={e=>setQuery(e.target.value)}
-      onKeyDown={e=>{
-        if(e.key==='Enter') askCompanion();
-      }}
-    />
-
-    <button
-      type="button"
-      onClick={()=>askCompanion()}
-      disabled={busy}
-    >
-      {busy ? '...' : '>'}
-    </button>
-  </div>
-
-  {answer === 'Ask anything about places, stories, highlights and moments from the journey.' && (
-    <div className="floating-suggested-questions">
-      <p>Try asking</p>
-
-      {suggestedQuestions.map(function(item){
-        return (
           <button
             type="button"
-            key={item}
-            onClick={()=>{
-              setQuery(item);
-              askCompanion(item);
-            }}
+            onClick={()=>setOpen(false)}
           >
-            {item}
+            ×
           </button>
-        );
-      })}
+        </div>
+
+        <div className="floating-chat-body">
+          {messages.length === 0 && (
+            <div className="floating-ai-intro">
+              <p>{welcomeText}</p>
+
+              <div className="floating-suggested-questions">
+                <p>Try asking</p>
+
+                {suggestedQuestions.map(function(item){
+                  return (
+                    <button
+                      type="button"
+                      key={item}
+                      onClick={()=>{
+                        askCompanion(item);
+                      }}
+                    >
+                      {item}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {messages.length > 0 && (
+            <div className="floating-chat-messages">
+              {messages.map(function(message,index){
+                return (
+                  <div
+                    key={index}
+                    className={
+                      message.role === 'user'
+                        ? 'chat-message chat-user'
+                        : 'chat-message chat-assistant'
+                    }
+                  >
+                    <span>
+                      {message.role === 'user' ? 'You' : 'The 210 Companion'}
+                    </span>
+
+                    <p>{message.text}</p>
+                  </div>
+                );
+              })}
+
+              {busy && (
+                <div className="chat-message chat-assistant">
+                  <span>The 210 Companion</span>
+                  <p>{loadingMessage}</p>
+                </div>
+              )}
+
+              {error && (
+                <small className="ai-error">
+                  {error}
+                </small>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="floating-ask-bar">
+          <Search size={15}/>
+
+          <input
+            value={query}
+            placeholder="Ask about the journey..."
+            onChange={e=>setQuery(e.target.value)}
+            onKeyDown={e=>{
+              if(e.key === 'Enter') askCompanion();
+            }}
+          />
+
+          <button
+            type="button"
+            onClick={()=>askCompanion()}
+            disabled={busy}
+          >
+            {busy ? '...' : '>'}
+          </button>
+        </div>
+      </section>
     </div>
   )}
+</>;
+}  
 
-</section>
-    </div>}
-  </>;
-}
+
 
 function SiteMenu({data}){
   const [open,setOpen] = useState(false);
