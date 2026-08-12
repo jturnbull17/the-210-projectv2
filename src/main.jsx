@@ -17,12 +17,13 @@ function RouteMap({countries,locations,selected,setSelected,phase,setPhase,curre
 </div></div>}
 
 function FloatingCompanion({data}){
-  const[open,setOpen]=useState(false);
   const[query,setQuery]=useState('');
-  const[answer,setAnswer]=useState('Ask anything about places, stories, highlights and moments from the journey.');
-  const[busy,setBusy]=useState(false);
-  const[error,setError]=useState('');
-  const[loadingMessage,setLoadingMessage]=useState('Checking the journal...');
+const[messages,setMessages]=useState([]);
+const[busy,setBusy]=useState(false);
+const[error,setError]=useState('');
+const[loadingMessage,setLoadingMessage]=useState('Checking the journal...');
+
+const welcomeText='Ask anything about places, stories, highlights and moments from the journey.';
 
   if(!data)return null;
 
@@ -46,33 +47,78 @@ function FloatingCompanion({data}){
     'Finding the best answer...'
   ];
 
-  async function askCompanion(overrideQuestion){
-    const question=String(overrideQuestion||query).trim();
 
-    if(!question){
-      setError('Ask a question first.');
-      return;
-    }
+async function askCompanion(overrideQuestion){
+  const question=String(overrideQuestion||query).trim();
 
-    if(!hasSupabase||!supabase){
-      setError('AI needs Supabase to be connected first.');
-      return;
-    }
-
-    setBusy(true);
-    setError('');
-    setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);
-
-    try{
-      const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});
-      if(error)throw error;
-      setAnswer(res?.answer||'I could not find a published story for that yet.');
-    }catch(e){
-      setError(e.message||'The AI companion could not answer just now.');
-    }finally{
-      setBusy(false);
-    }
+  if(!question){
+    setError('Ask a question first.');
+    return;
   }
+
+  if(!hasSupabase||!supabase){
+    setError('AI needs Supabase to be connected first.');
+    return;
+  }
+
+  setMessages(function(previous){
+    return [
+      ...previous,
+      {
+        role:'user',
+        text:question
+      }
+    ];
+  });
+
+  setQuery('');
+  setBusy(true);
+  setError('');
+  setLoadingMessage('Checking the journal...');
+
+  try{
+    const{data:res,error}=await supabase.functions.invoke(
+      'ask-companion',
+      {
+        body:{
+          question:question
+        }
+      }
+    );
+
+    if(error)throw error;
+
+    const reply=res?.answer||'I could not find a published story for that yet.';
+
+    setMessages(function(previous){
+      return [
+        ...previous,
+        {
+          role:'assistant',
+          text:reply
+        }
+      ];
+    });
+  }catch(e){
+    const message=e.message||'The AI companion could not answer just now.';
+
+    setError(message);
+
+    setMessages(function(previous){
+      return [
+        ...previous,
+        {
+          role:'assistant',
+          text:message
+        }
+      ];
+    });
+  }finally{
+    setBusy(false);
+  }
+}
+
+
 
   return <>
     <button className="floating-ai-button" type="button" onClick={()=>setOpen(true)}>
@@ -84,18 +130,101 @@ function FloatingCompanion({data}){
 
      <section className="floating-ai-panel">
   <div className="floating-ai-head">
-    <div>
-      <p>THE 210 COMPANION</p>
-      <h2>Ask about the journey.</h2>
-    </div>
-
-    <button
-      type="button"
-      onClick={()=>setOpen(false)}
-    >
-      ×
-    </button>
+  <div>
+    <p>THE 210 COMPANION</p>
+    <h2>Ask about the journey.</h2>
   </div>
+
+  <button
+    type="button"
+    onClick={()=>setOpen(false)}
+  >
+    ×
+  </button>
+</div>
+
+<div className="floating-chat-body">
+
+  {messages.length===0&&(
+    <div className="floating-ai-intro">
+      <p>{welcomeText}</p>
+
+      <div className="floating-suggested-questions">
+        <p>Try asking</p>
+
+        {suggestedQuestions.map(function(item){
+          return (
+            <button
+              type="button"
+              key={item}
+              onClick={()=>{
+                askCompanion(item);
+              }}
+            >
+              {item}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  )}
+
+  {messages.length>0&&(
+    <div className="floating-chat-messages">
+      {messages.map(function(message,index){
+        return (
+          <div
+            key={index}
+            className={message.role==='user'?'chat-message chat-user':'chat-message chat-assistant'}
+          >
+            <span>
+              {message.role==='user'?'You':'The 210 Companion'}
+            </span>
+
+            <p>
+              {message.text}
+            </p>
+          </div>
+        );
+      })}
+
+      {busy&&(
+        <div className="chat-message chat-assistant">
+          <span>The 210 Companion</span>
+          <p>{loadingMessage}</p>
+        </div>
+      )}
+
+      {error&&(
+        <small className="ai-error">
+          {error}
+        </small>
+      )}
+    </div>
+  )}
+
+</div>
+
+<div className="floating-ask-bar">
+  <Search size={15}/>
+
+  <input
+    value={query}
+    placeholder="Ask about the journey..."
+    onChange={e=>setQuery(e.target.value)}
+    onKeyDown={e=>{
+      if(e.key==='Enter')askCompanion();
+    }}
+  />
+
+  <button
+    type="button"
+    onClick={()=>askCompanion()}
+    disabled={busy}
+  >
+    {busy?'...':'>'}
+  </button>
+</div>
 
   <article className="floating-ai-answer">
     <h3>
