@@ -121,7 +121,7 @@ function buildLocationContext(locations, countries, includeBlog) {
       ];
 
       if (includeBlog) {
-        parts.push("Blog: " + compact(location.blog, 1000));
+        parts.push("Blog: " + compact(location.blog, 2000));
       }
 
       return parts.join("\n");
@@ -234,6 +234,13 @@ Deno.serve(async function(req) {
       const country = countries.find(function(item) {
         return item.id === location.country_id;
       });
+
+const isCountryQuestion =
+  matchingCountries.length === 1 &&
+  matchingLocations.length === 0;
+
+const isLocationQuestion =
+  matchingLocations.length === 1;
 
       return (
         questionMentionsLocation(questionLower, location) ||
@@ -378,18 +385,39 @@ if (wantsHighlights(questionLower) && matchingCountries.length === 1) {
   }
 }
 
-if (
-  matchingCountries.length === 1 &&
-  (
-    questionLower.includes("what did they do") ||
-    questionLower.includes("what did jack and grace do") ||
-    questionLower.includes("what did jack do") ||
-    questionLower.includes("what did grace do") ||
-    questionLower.includes("tell me about") ||
-    questionLower.includes("what happened in") ||
-    questionLower.includes("what happened")
-  )
-) {
+if (isCountryQuestion) {
+  const matchedCountry = matchingCountries[0];
+
+  const countryLocations = locations.filter(function(location) {
+    return location.country_id === matchedCountry.id;
+  });
+
+  const locationNames = countryLocations
+    .map(function(location) {
+      return location.name;
+    })
+    .filter(Boolean);
+
+  const summaries = countryLocations
+    .map(function(location) {
+      return (
+        location.name +
+        ": " +
+        textValue(location.summary)
+      );
+    })
+    .filter(Boolean);
+
+  return jsonResponse({
+    answer:
+      "During their time in " +
+      matchedCountry.name +
+      ", Jack and Grace visited " +
+      locationNames.join(", ") +
+      ".\n\n" +
+      summaries.slice(0,8).join("\n\n")
+  });
+} {
   const matchedCountry = matchingCountries[0];
 
   const countryLocations = locations.filter(function(location) {
@@ -425,7 +453,7 @@ if (
   });
 }
 
-    if (matchingLocations.length === 1 && wantsSummary(questionLower)) {
+    if (isLocationQuestion)) {
       const matchedLocation = matchingLocations[0];
       const matchedCountry = countries.find(function(country) {
         return country.id === matchedLocation.country_id;
@@ -438,7 +466,7 @@ if (
           ": " +
           compact(matchedLocation.summary, 350) +
           (matchedLocation.blog
-            ? "\n\n" + compact(matchedLocation.blog, 700)
+            ? "\n\n" + compact(matchedLocation.blog, 1200)
             : "")
       });
     }
