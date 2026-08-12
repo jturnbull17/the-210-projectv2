@@ -382,6 +382,10 @@ if (
   matchingCountries.length === 1 &&
   (
     questionLower.includes("what did they do") ||
+    questionLower.includes("what did jack and grace do") ||
+    questionLower.includes("what did jack do") ||
+    questionLower.includes("what did grace do") ||
+    questionLower.includes("tell me about") ||
     questionLower.includes("what happened in") ||
     questionLower.includes("what happened")
   )
@@ -400,18 +404,24 @@ if (
 
   const summaries = countryLocations
     .map(function(location) {
-      return location.name + ": " + textValue(location.summary);
+      return (
+  location.name +
+  ": " +
+  textValue(location.summary) +
+  " " +
+  compact(location.blog, 300)
+);
     })
     .filter(Boolean);
 
   return jsonResponse({
     answer:
-      "During their time in " +
-      matchedCountry.name +
-      ", Jack and Grace visited " +
-      locationNames.join(", ") +
-      ".\n\n" +
-      summaries.slice(0, 5).join("\n\n")
+  "During their time in " +
+  matchedCountry.name +
+  ", Jack and Grace travelled through " +
+  locationNames.join(", ") +
+  ".\n\n" +
+  summaries.slice(0, 8).join("\n\n")
   });
 }
 
@@ -454,6 +464,8 @@ if (
     questionLower.includes("what locations") ||
     questionLower.includes("which locations") ||
     questionLower.includes("where did they visit") ||
+    questionLower.includes("where did jack and grace visit") ||
+    questionLower.includes("where did jack visit") ||
     questionLower.includes("places visited")
   )
 ) {
@@ -567,7 +579,12 @@ if (
       questionLower.includes("story") ||
       questionLower.includes("blog") ||
       questionLower.includes("changed") ||
-      questionLower.includes("experience");
+      questionLower.includes("experience") ||
+questionLower.includes("what did") ||
+questionLower.includes("tell me about") ||
+questionLower.includes("visit") ||
+questionLower.includes("visited") ||
+questionLower.includes("journey");
 
     const countryContext = buildCountryContext(contextCountries);
     const locationContext = buildLocationContext(
