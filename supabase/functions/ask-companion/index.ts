@@ -645,7 +645,7 @@ questionLower.includes("journey");
           ],
           generationConfig: {
             temperature: 0.25,
-            maxOutputTokens: 180
+            maxOutputTokens: 500
           }
         })
       }
@@ -661,16 +661,26 @@ questionLower.includes("journey");
       );
     }
 
-    const answer =
-      json &&
-      json.candidates &&
-      json.candidates[0] &&
-      json.candidates[0].content &&
-      json.candidates[0].content.parts &&
-      json.candidates[0].content.parts[0] &&
-      json.candidates[0].content.parts[0].text
-        ? json.candidates[0].content.parts[0].text
-        : "No Gemini response";
+const answer =
+  json &&
+  json.candidates &&
+  json.candidates[0] &&
+  json.candidates[0].content &&
+  json.candidates[0].content.parts &&
+  json.candidates[0].content.parts[0] &&
+  json.candidates[0].content.parts[0].text
+    ? json.candidates[0].content.parts[0].text.trim()
+    : "";
+
+if (
+  !answer ||
+  answer.includes("Give specific details rather than") ||
+  answer.includes("When answering:") ||
+  answer.includes("Only answer using the travel information") ||
+  answer.length < 20
+) {
+  throw new Error("Gemini returned an invalid response");
+}
 
     return jsonResponse({
       answer: answer
