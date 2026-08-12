@@ -484,27 +484,7 @@ if (
     questionLower.includes("where did jack visit") ||
     questionLower.includes("places visited")
   )
-) {
-  const matchedCountry = matchingCountries[0];
-
-  const countryLocations = locations
-    .filter(function(location) {
-      return location.country_id === matchedCountry.id;
-    })
-    .map(function(location) {
-      return location.name;
-    })
-    .filter(Boolean);
-
-  return jsonResponse({
-    answer:
-      "During their time in " +
-      matchedCountry.name +
-      ", Jack and Grace visited " +
-      countryLocations.join(", ") +
-      "."
-  });
-}
+) 
 
 
 if (
