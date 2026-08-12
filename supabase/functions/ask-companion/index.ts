@@ -140,10 +140,13 @@ function questionMentionsCountry(questionLower, country) {
 }
 
 function questionMentionsLocation(questionLower, location) {
+  const name = lower(location.name);
+  const slug = lower(location.slug);
+
   return (
-    questionLower.includes(lower(location.name)) ||
-    questionLower.includes(lower(location.slug)) ||
-    questionLower.includes(lower(location.country_id))
+    questionLower.includes(name) ||
+    name.includes(questionLower) ||
+    questionLower.includes(slug)
   );
 }
 
@@ -233,18 +236,18 @@ Deno.serve(async function(req) {
       return questionMentionsCountry(questionLower, country);
     });
 
-    const matchingLocations = locations.filter(function(location) {
-      const country = countries.find(function(item) {
-        return item.id === location.country_id;
-      });
+  const matchingLocations = locations.filter(function(location) {
+  const country = countries.find(function(item) {
+    return item.id === location.country_id;
+  });
 
-return jsonResponse({
-  answer:
-    "Countries=" +
-    matchingCountries.length +
-    ", Locations=" +
-    matchingLocations.length
+  return (
+    questionMentionsLocation(questionLower, location) ||
+    (country && questionMentionsCountry(questionLower, country))
+  );
 });
+
+
 
 const isCountryQuestion =
   matchingCountries.length === 1 &&
@@ -467,12 +470,21 @@ if (isCountryQuestion) {
 
 if (isLocationQuestion) {
   const matchedLocation = matchingLocations[0];
+  const matchedCountry = countries.find(function(country) {
+    return country.id === matchedLocation.country_id;
+  });
 
   return jsonResponse({
-    answer: "LOCATION HANDLER: " + matchedLocation.name
+    answer:
+      matchedLocation.name +
+      (matchedCountry ? ", " + matchedCountry.name : "") +
+      ": " +
+      compact(matchedLocation.summary, 350) +
+      (matchedLocation.blog
+        ? "\n\n" + compact(matchedLocation.blog, 1200)
+        : "")
   });
 }
-
 
     if (
       matchingCountries.length === 1 &&
