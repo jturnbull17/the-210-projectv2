@@ -1162,6 +1162,7 @@ function MediaRow({m,copyToken,setHero,saveCaption,removeMedia}){const[caption,s
 
 function Footer() {
   const [showSubscribe, setShowSubscribe] = useState(false);
+console.log("showSubscribe =", showSubscribe);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
@@ -1190,7 +1191,7 @@ function Footer() {
 
       setEmail('');
       setMessage(
-        'Thanks for subscribing! We will notify you when a new story is published.'
+        '✅ Thanks for subscribing! We will notify you when a new story is published.'
       );
 
     } catch (error) {
@@ -1220,7 +1221,7 @@ function Footer() {
         </button>
       </div>
 
-       <a href="/admin">Private Admin</a>
+ <a href="/admin">Private Admin</a>
 
       {showSubscribe && (
         <div
@@ -1271,6 +1272,7 @@ function Footer() {
     </footer>
   );
 }
+
 
 function Router(){
   const [data] = useData();
