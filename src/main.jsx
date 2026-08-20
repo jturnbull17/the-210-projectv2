@@ -673,8 +673,11 @@ function LatestStory({data}) {
               </small>
             )}
           </div>
-        </div>
+              </div>
       )}
+
+      </div>
+
     </section>
   );
 }
