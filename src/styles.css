@@ -73,15 +73,15 @@
   min-height:74px;
   background:#0b2f27;
   color:rgba(244,237,223,.65);
+
   display:flex;
-  flex-direction:column;
   align-items:center;
   justify-content:space-between;
-  gap:10px;
+
   font-size:10px;
   letter-spacing:.12em;
-  padding:20px 16px;
-  text-align:center;
+
+  padding:0 16px;
 }
 
 .footer button{
@@ -898,22 +898,18 @@ flex-direction:column;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:8px;
-}
-
-.footer-subscribe{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
   justify-content:center;
+
   gap:12px;
+
   max-width:420px;
+
+  text-align:center;
+flex:1;
 }
 
 .footer-subscribe span{
-  text-align:center;
-  line-height:1.6;
+  line-height:1.5;
   letter-spacing:.06em;
 }
 

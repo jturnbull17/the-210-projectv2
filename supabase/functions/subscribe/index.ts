@@ -15,6 +15,24 @@ Deno.serve(async (req) => {
 
   try {
     const { email } = await req.json();
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(email)) {
+  return new Response(
+    JSON.stringify({
+      success: false,
+      message: 'Please enter a valid email address.'
+    }),
+    {
+      status: 400,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+}
 
     if (!email) {
       return new Response(
@@ -42,6 +60,25 @@ Deno.serve(async (req) => {
       .insert({
         email
       });
+
+if (
+  error &&
+  error.code === '23505'
+) {
+  return new Response(
+    JSON.stringify({
+      success: true,
+      message: 'You are already subscribed.'
+    }),
+    {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+}
 
     if (error) {
       return new Response(

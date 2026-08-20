@@ -1162,16 +1162,27 @@ function MediaRow({m,copyToken,setHero,saveCaption,removeMedia}){const[caption,s
 
 function Footer() {
   const [showSubscribe, setShowSubscribe] = useState(false);
-console.log("showSubscribe =", showSubscribe);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
 
   async function subscribe() {
-    if (!email.trim()) {
-      setMessage('Please enter an email address.');
-      return;
-    }
+   const emailAddress = email.trim();
+
+if (!emailAddress) {
+  setMessage('Please enter an email address.');
+  return;
+}
+
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!emailRegex.test(emailAddress)) {
+  setMessage(
+    'Please enter a valid email address.'
+  );
+  return;
+}
 
     try {
       setBusy(true);
@@ -1191,7 +1202,7 @@ console.log("showSubscribe =", showSubscribe);
 
       setEmail('');
       setMessage(
-        '✅ Thanks for subscribing! We will notify you when a new story is published.'
+        '✅ Thanks for subscribing! We’ll email you whenever a new story is published.'
       );
 
     } catch (error) {
@@ -1209,17 +1220,15 @@ console.log("showSubscribe =", showSubscribe);
       <span>THE 210 PROJECT</span>
 
       <div className="footer-subscribe">
-        <span>
-          Get email notifications when a new story is published.
-        </span>
+  <span>Get email notifications when a new story is published.</span>
 
-        <button
-          type="button"
-          onClick={() => setShowSubscribe(true)}
-        >
-          Subscribe
-        </button>
-      </div>
+  <button
+    type="button"
+    onClick={() => setShowSubscribe(true)}
+  >
+    Subscribe
+  </button>
+</div>
 
  <a href="/admin">Private Admin</a>
 
@@ -1239,12 +1248,14 @@ console.log("showSubscribe =", showSubscribe);
               a new story is published.
             </p>
 
-            <input
-              type="email"
-              value={email}
-              placeholder="your@email.com"
-              onChange={(e) => setEmail(e.target.value)}
-            />
+          <input
+  type="email"
+  value={email}
+  placeholder="your@email.com"
+  autoComplete="email"
+  required
+  onChange={(e) => setEmail(e.target.value)}
+/>
 
             <button
               type="button"
