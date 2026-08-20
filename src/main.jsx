@@ -1161,13 +1161,23 @@ function Admin(){const[data,refresh]=useData();const[session,setSession]=useStat
 function MediaRow({m,copyToken,setHero,saveCaption,removeMedia}){const[caption,setCaption]=useState(m.caption||'');const isVideo=m.media_type==='video'||/\.(mp4|mov|webm)(\?|$)/i.test(m.url);return <div className="media-row">{isVideo?<video src={m.url}muted playsInline/>:<img src={m.url}/>}<div><small>[[media:{m.id}]]</small><input value={caption}onChange={e=>setCaption(e.target.value)}placeholder="Caption"/></div><button onClick={()=>copyToken(m.id)}>Copy token</button><button onClick={()=>saveCaption(m,caption)}>Save caption</button>{!isVideo&&<button onClick={()=>setHero(m.url)}>Set hero</button>}<button className="danger"onClick={()=>removeMedia(m)}>Delete</button></div>}
 
 function Footer() {
-return (
-<footer className="footer">
+  return (
+    <footer className="footer">
 
       <span>THE 210 PROJECT</span>
-      <button className="newsletter-link">Get email notifications when a new story is published</button>
 
-      <a href="/admin">Private Admin</a>
+      <span>
+        Get email notifications when a new story is published.
+      </span>
+
+      <button
+        type="button"
+        onClick={() => setShowSubscribe(true)}
+      >
+        Subscribe
+      </button>
+
+ <a href="/admin">Private Admin</a>
 
     </footer>
   );
