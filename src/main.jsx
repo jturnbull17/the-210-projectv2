@@ -1161,6 +1161,47 @@ function Admin(){const[data,refresh]=useData();const[session,setSession]=useStat
 function MediaRow({m,copyToken,setHero,saveCaption,removeMedia}){const[caption,setCaption]=useState(m.caption||'');const isVideo=m.media_type==='video'||/\.(mp4|mov|webm)(\?|$)/i.test(m.url);return <div className="media-row">{isVideo?<video src={m.url}muted playsInline/>:<img src={m.url}/>}<div><small>[[media:{m.id}]]</small><input value={caption}onChange={e=>setCaption(e.target.value)}placeholder="Caption"/></div><button onClick={()=>copyToken(m.id)}>Copy token</button><button onClick={()=>saveCaption(m,caption)}>Save caption</button>{!isVideo&&<button onClick={()=>setHero(m.url)}>Set hero</button>}<button className="danger"onClick={()=>removeMedia(m)}>Delete</button></div>}
 
 function Footer() {
+  const [showSubscribe, setShowSubscribe] = useState(false);
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  async function subscribe() {
+    if (!email.trim()) {
+      setMessage('Please enter an email address.');
+      return;
+    }
+
+    try {
+      setBusy(true);
+
+      const { error } = await supabase.functions.invoke(
+        'subscribe',
+        {
+          body: {
+            email: email.trim()
+          }
+        }
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      setEmail('');
+      setMessage(
+        'Thanks for subscribing! We will notify you when a new story is published.'
+      );
+
+    } catch (error) {
+      setMessage(
+        error.message || 'Subscription failed.'
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <footer className="footer">
 
@@ -1179,7 +1220,53 @@ function Footer() {
         </button>
       </div>
 
- <a href="/admin">Private Admin</a>
+       <a href="/admin">Private Admin</a>
+
+      {showSubscribe && (
+        <div
+          className="newsletter-modal"
+          onClick={() => setShowSubscribe(false)}
+        >
+          <div
+            className="newsletter-modal-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>Get Journey Updates</h3>
+
+            <p>
+              Enter your email and we'll notify you when
+              a new story is published.
+            </p>
+
+            <input
+              type="email"
+              value={email}
+              placeholder="your@email.com"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <button
+              type="button"
+              onClick={subscribe}
+              disabled={busy}
+            >
+              {busy ? 'Subscribing...' : 'Subscribe'}
+            </button>
+
+            {message && (
+              <small>{message}</small>
+            )}
+
+            <button
+              type="button"
+              className="newsletter-close"
+              onClick={() => setShowSubscribe(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
     </footer>
   );
