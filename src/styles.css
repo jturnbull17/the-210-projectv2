@@ -826,3 +826,35 @@ flex-direction:column;
 }
 
 
+.newsletter-signup{
+  max-width:600px;
+  margin:0 auto 24px;
+}
+
+.newsletter-signup h3{
+  margin:0 0 8px;
+}
+
+.newsletter-signup p{
+  margin:0 0 16px;
+}
+
+.newsletter-form{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.newsletter-form input{
+  flex:1;
+  min-width:240px;
+}
+
+.newsletter-form button{
+  white-space:nowrap;
+}
+
+.newsletter-message{
+  display:block;
+  margin-top:12px;
+}
