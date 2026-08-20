@@ -603,10 +603,9 @@ function LatestStory({data}) {
           </div>
         </div>
 
-      <a
-  classNameountry.id}/${loc.slug}`}
-  <span>Read latest entry</span>
-  <strong>{loc.name}</strong>
+<a
+  className="latest-card"
+  href={`/archive/${country.id}/${loc.slug}`}<strong>{loc.name}</strong>
   <small>{country?.name}</small>
 </a>
 
@@ -1428,6 +1427,14 @@ function Footer() {
             {message}
           </small>
         )}
+<button
+  type="button"
+  className="newsletter-close"
+  onClick={closeSubscribe}
+>
+  Close
+</button>
+
       </div>
 
       <span>THE 210 PROJECT</span>
