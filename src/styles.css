@@ -892,14 +892,26 @@ flex-direction:column;
   margin-top:12px;
 }
 
-.footer-subscribe{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:12px;
-}
 
 .footer-subscribe span{
   text-align:center;
 }
 
+.footer-subscribe{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+
+.footer-subscribe button{
+  background:#c67d4e;
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  padding:8px 18px;
+  cursor:pointer;
+  font-size:10px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}

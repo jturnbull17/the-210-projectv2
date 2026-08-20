@@ -1166,16 +1166,18 @@ function Footer() {
 
       <span>THE 210 PROJECT</span>
 
-      <span>
-        Get email notifications when a new story is published.
-      </span>
+      <div className="footer-subscribe">
+        <span>
+          Get email notifications when a new story is published.
+        </span>
 
-      <button
-        type="button"
-        onClick={() => setShowSubscribe(true)}
-      >
-        Subscribe
-      </button>
+        <button
+          type="button"
+          onClick={() => setShowSubscribe(true)}
+        >
+          Subscribe
+        </button>
+      </div>
 
  <a href="/admin">Private Admin</a>
 
