@@ -603,12 +603,12 @@ function LatestStory({data}) {
           </div>
         </div>
 
-        {`/archive/${country.id}/${loc.slug}`}
-          <span>Read latest entry</span>
-          <strong>{loc.name}</strong>
-          <small>{country?.name}</small>
-        </a>
-      </div>
+      <a
+  classNameountry.id}/${loc.slug}`}
+  <span>Read latest entry</span>
+  <strong>{loc.name}</strong>
+  <small>{country?.name}</small>
+</a>
 
       {showSubscribe && (
         <div
@@ -676,6 +676,8 @@ function LatestStory({data}) {
     </section>
   );
 }
+
+
 
 
 function ArchiveTimeline({data}){const[open,setOpen]=useState(data.settings.current_country_id||data.countries[0]?.id);return <section className="story-section archive-timeline-section"id="archive"><div className="section-inner"><div className="archive-head"><div><p className="kicker dark"><i/> ARCHIVE TIMELINE</p><h2>The journey, in order.</h2><p>Expand a country to jump straight into its locations without digging through extra pages.</p></div><div className="archive-status-key"><span className="status-key live">Live</span><span className="status-key visited">Completed</span><span className="status-key upcoming">Coming soon</span></div></div><div className="timeline-list">{data.countries.map(c=>{const locs=data.locations.filter(l=>l.country_id===c.id);const isOpen=open===c.id;const label=statusLabel(c,data.settings.current_country_id);return <article key={c.id}className={`timeline-card ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'} ${isOpen?'open':''}`}><div className="timeline-marker"><span>{String(c.route_order||'').padStart(2,'0')}</span></div><div className="timeline-body"><button className="timeline-toggle"onClick={()=>setOpen(isOpen?null:c.id)}><span className="timeline-date">{c.dates||phases[c.phase]?.duration}</span><strong>{c.name}</strong><em className={`timeline-status ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'}`}>{label}</em><b>{isOpen?'-':'+'}</b></button>{isOpen&&<div className="timeline-drawer"><p>{c.summary}</p>{locs.length?<div className="timeline-locations">{locs.map(l=><a key={l.id}href={`/archive/${c.id}/${l.slug}`}><span>{l.date_text||'Story'}</span><strong>{l.name}</strong><small>{l.summary||'Open story'} ’</small></a>)}</div>:<p className="hint">Stories coming soon for this country.</p>}<a className="chapter-link"href={`/archive/${c.id}`}>Open {c.name} chapter’</a></div>}</div></article>})}</div></div></section>}
