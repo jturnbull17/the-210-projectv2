@@ -1246,11 +1246,9 @@ if (error) {
         )}
       </div>
 
-      <span>THE 210 PROJECT</span>
+<span>THE 210 PROJECT</span>
 <span>A living travel archive.</span>
-
-<a href  Private Admin
-</a>
+/adminPrivate Admin</a>
 
     </footer>
   );
