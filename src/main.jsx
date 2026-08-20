@@ -491,156 +491,192 @@ const loadingMessages=[
 
 <Footer/><FloatingCompanion data={data}/><BottomNav/></>}
 function getLatestStory(data){const locs=[...(data.locations||[])];if(!locs.length)return null;const current=locs.find(l=>l.country_id===data.settings.current_country_id&&l.slug===data.settings.current_location_slug);const sorted=[...locs].sort((a,b)=>String(b.created_at||b.updated_at||b.date_text||'').localeCompare(String(a.created_at||a.updated_at||a.date_text||'')));const loc=current||sorted[0]||locs[locs.length-1];const country=getCountry(data.countries,loc.country_id);return{loc,country}}
-function LatestStory({data}){const latest=getLatestStory(data);if(!latest)return null;const{loc,country}=latest;return <section className="story-section latest-story-section"><div className="section-inner latest-story-inner"><div><p className="kicker dark"><i/> LATEST STORY</p><h2>{loc.name}</h2><p>{loc.summary||'The next story from the journey will appear here.'}</p><div className="latest-meta"><span>{country?.name}</span>{loc.date_text&&<span>{loc.date_text}</span>}
-</div>
 
 
-<div className="latest-subscribe">
+function LatestStory({data}) {
+  const latest = getLatestStory(data);
 
-  <span className="latest-subscribe-text">
-    Get email notifications when a new story is published.
-  </span>
+  const [showSubscribe,setShowSubscribe] = useState(false);
+  const [email,setEmail] = useState('');
+  const [message,setMessage] = useState('');
+  const [busy,setBusy] = useState(false);
 
-  <button
-    type="button"
-    className="latest-subscribe-button"
-    onClick={() => setShowSubscribe(true)}
-  >
-    Subscribe
-  </button>
+  if(!latest) return null;
 
-</div>
-
-
-</div><a className="latest-card"href={`/archive/${country.id}/${loc.slug}`}><span>Read latest entry</span><strong>{loc.name}</strong><small>{country?.name}</small></a></div></section>}
-
-
-function NewsletterSignup() {
-  const [showSubscribe, setShowSubscribe] = useState(false);
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [busy, setBusy] = useState(false);
+  const {loc,country} = latest;
 
   async function subscribe() {
-    const emailAddress = email.trim();
+    const emailAddress = email.trim().toLowerCase();
 
-    if (!emailAddress) {
+    if(!emailAddress) {
       setMessage('Please enter an email address.');
       return;
     }
 
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(emailAddress)) {
+    if(!emailRegex.test(emailAddress)) {
       setMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if(!hasSupabase || !supabase) {
+      setMessage('Subscriptions are not available right now.');
       return;
     }
 
     try {
       setBusy(true);
+      setMessage('');
 
-      const { error } = await supabase.functions.invoke(
-        'subscribe',
-        {
-          body: {
-            email: emailAddress
+      const {data:result,error} =
+        await supabase.functions.invoke(
+          'subscribe',
+          {
+            body:{
+              email:emailAddress
+            }
           }
-        }
-      );
+        );
 
-      if (error) {
-        throw error;
-      }
+      if(error) throw error;
 
       setEmail('');
+
       setMessage(
-        '✅ Subscription confirmed. We will email you when a new story is published.'
+        result?.message ||
+        'Subscription confirmed. We will email you when a new story is published.'
       );
 
-    } catch (error) {
+    } catch(error) {
       setMessage(
-        error.message || 'Subscription failed.'
+        error?.message ||
+        'Subscription failed. Please try again.'
       );
     } finally {
       setBusy(false);
     }
   }
 
+  function closeSubscribe() {
+    setShowSubscribe(false);
+    setEmail('');
+    setMessage('');
+  }
+
   return (
-    <section className="story-section newsletter-section">
-      <div className="section-inner newsletter-inner">
+    <section className="story-section latest-story-section">
+      <div className="section-inner latest-story-inner">
 
-        <p className="kicker dark">
-          <i /> FOLLOW THE JOURNEY
-        </p>
+        <div>
+          <p className="kicker dark">
+            <i/> LATEST STORY
+          </p>
 
-        <h2>Never miss a story.</h2>
+          <h2>{loc.name}</h2>
 
-        <p>
-          Get email notifications whenever Jack and Grace
-          publish a new story, gallery or travel update.
-        </p>
+          <p>
+            {loc.summary ||
+              'The next story from the journey will appear here.'}
+          </p>
 
-        <button
-          type="button"
-          className="newsletter-button"
-          onClick={() => setShowSubscribe(true)}
-        >
-          Subscribe
-        </button>
+          <div className="latest-meta">
+            <span>{country?.name}</span>
 
-        {showSubscribe && (
-          <div
-            className="newsletter-modal"
-            onClick={() => setShowSubscribe(false)}
-          >
-            <div
-              className="newsletter-modal-card"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3>Get Journey Updates</h3>
-
-              <p>
-                Enter your email address and we'll notify
-                you whenever a new story is published.
-              </p>
-
-              <input
-                type="email"
-                value={email}
-                placeholder="your@email.com"
-                autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-
-              <button
-                type="button"
-                onClick={subscribe}
-                disabled={busy}
-              >
-                {busy ? 'Subscribing...' : 'Subscribe'}
-              </button>
-
-              {message && (
-                <small>{message}</small>
-              )}
-
-              <button
-                type="button"
-                className="newsletter-close"
-                onClick={() => setShowSubscribe(false)}
-              >
-                Close
-              </button>
-            </div>
+            {loc.date_text && (
+              <span>{loc.date_text}</span>
+            )}
           </div>
-        )}
 
+          <div className="latest-subscribe">
+            <span className="latest-subscribe-text">
+              Get email notifications when a new story is published.
+            </span>
+
+            <button
+              type="button"
+              className="latest-subscribe-button"
+              onClick={() => setShowSubscribe(true)}
+            >
+              Subscribe
+            </button>
+          </div>
+        </div>
+
+        {`/archive/${country.id}/${loc.slug}`}
+          <span>Read latest entry</span>
+          <strong>{loc.name}</strong>
+          <small>{country?.name}</small>
+        </a>
       </div>
+
+      {showSubscribe && (
+        <div
+          className="newsletter-modal"
+          onClick={closeSubscribe}
+        >
+          <div
+            className="newsletter-modal-card"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="newsletter-modal-close"
+              onClick={closeSubscribe}
+              aria-label="Close subscription form"
+            >
+              ×
+            </button>
+
+            <p className="kicker dark">
+              <i/> FOLLOW THE JOURNEY
+            </p>
+
+            <h3>Get Journey Updates</h3>
+
+            <p>
+              Enter your email address and we will notify you
+              whenever a new story is published.
+            </p>
+
+            <input
+              type="email"
+              value={email}
+              placeholder="your@email.com"
+              autoComplete="email"
+              inputMode="email"
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setMessage('');
+              }}
+              onKeyDown={(event) => {
+                if(event.key === 'Enter' && !busy) {
+                  subscribe();
+                }
+              }}
+            />
+
+            <button
+              type="button"
+              className="newsletter-confirm-button"
+              onClick={subscribe}
+              disabled={busy}
+            >
+              {busy ? 'Subscribing...' : 'Subscribe'}
+            </button>
+
+            {message && (
+              <small className="newsletter-message">
+                {message}
+              </small>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 }
+
 
 function ArchiveTimeline({data}){const[open,setOpen]=useState(data.settings.current_country_id||data.countries[0]?.id);return <section className="story-section archive-timeline-section"id="archive"><div className="section-inner"><div className="archive-head"><div><p className="kicker dark"><i/> ARCHIVE TIMELINE</p><h2>The journey, in order.</h2><p>Expand a country to jump straight into its locations without digging through extra pages.</p></div><div className="archive-status-key"><span className="status-key live">Live</span><span className="status-key visited">Completed</span><span className="status-key upcoming">Coming soon</span></div></div><div className="timeline-list">{data.countries.map(c=>{const locs=data.locations.filter(l=>l.country_id===c.id);const isOpen=open===c.id;const label=statusLabel(c,data.settings.current_country_id);return <article key={c.id}className={`timeline-card ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'} ${isOpen?'open':''}`}><div className="timeline-marker"><span>{String(c.route_order||'').padStart(2,'0')}</span></div><div className="timeline-body"><button className="timeline-toggle"onClick={()=>setOpen(isOpen?null:c.id)}><span className="timeline-date">{c.dates||phases[c.phase]?.duration}</span><strong>{c.name}</strong><em className={`timeline-status ${c.status==='visited'?'visited':c.status==='live'||c.id===data.settings.current_country_id?'live':'upcoming'}`}>{label}</em><b>{isOpen?'-':'+'}</b></button>{isOpen&&<div className="timeline-drawer"><p>{c.summary}</p>{locs.length?<div className="timeline-locations">{locs.map(l=><a key={l.id}href={`/archive/${c.id}/${l.slug}`}><span>{l.date_text||'Story'}</span><strong>{l.name}</strong><small>{l.summary||'Open story'} ’</small></a>)}</div>:<p className="hint">Stories coming soon for this country.</p>}<a className="chapter-link"href={`/archive/${c.id}`}>Open {c.name} chapter’</a></div>}</div></article>})}</div></div></section>}
 
@@ -1401,7 +1437,14 @@ function Footer() {
     </footer>
   );
 }
+function Footer() {
+   return (
+    <footer className="footer">
+      <span>THE 210 PROJECT</span>
 
+    </footer>
+  );
+}
 
 
 function Router(){
