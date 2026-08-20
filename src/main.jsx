@@ -605,7 +605,10 @@ function LatestStory({data}) {
 
 <a
   className="latest-card"
-  href={`/archive/${country.id}/${loc.slug}`}<strong>{loc.name}</strong>
+  href={`/archive/${country.id}/${loc.slug}`}
+>
+  <span>Read latest entry</span>
+  <strong>{loc.name}</strong>
   <small>{country?.name}</small>
 </a>
 
