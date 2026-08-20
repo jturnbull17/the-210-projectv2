@@ -1174,26 +1174,18 @@ function Footer() {
     try {
       setBusy(true);
 
-     const { data, error } =
-  await supabase.functions.invoke(
-    'subscribe',
-    {
-      body: {
-        email: email.trim()
-      }
-    }
-  );
-
-if (error) {
-  throw error;
-}
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.message || 'Subscription failed'
+      const { data, error } =
+        await supabase.functions.invoke(
+          'subscribe',
+          {
+            body: {
+              email: email.trim()
+            }
+          }
         );
+
+      if (error) {
+        throw error;
       }
 
       setEmail('');
@@ -1227,7 +1219,7 @@ if (error) {
             type="email"
             value={email}
             placeholder="Enter your email"
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <button
@@ -1246,9 +1238,12 @@ if (error) {
         )}
       </div>
 
-<span>THE 210 PROJECT</span>
-<span>A living travel archive.</span>
-/adminPrivate Admin</a>
+      <span>THE 210 PROJECT</span>
+      <span>A living travel archive.</span>
+
+      /admin
+        Private Admin
+      </a>
 
     </footer>
   );
