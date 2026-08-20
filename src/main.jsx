@@ -1241,9 +1241,7 @@ function Footer() {
       <span>THE 210 PROJECT</span>
       <span>A living travel archive.</span>
 
-      /admin
-        Private Admin
-      </a>
+      <a href="/admin">Private Admin</a>
 
     </footer>
   );
