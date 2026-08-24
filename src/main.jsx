@@ -488,11 +488,17 @@ const loadingMessages=[
   'Exploring the route...',
   'Finding the best answer...'
 ];async function askCompanion(overrideQuestion){const question=String(overrideQuestion||query).trim();if(!question){setAiError('Ask a question first.');return}if(!hasSupabase||!supabase){setAiError('AI needs Supabase to be connected first.');return}setAiBusy(true);setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);setAiError('');try{const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});if(error)throw error;setAiAnswer(res?.answer||'I could not find a published story for that yet.')}catch(e){setAiError(e.message||'The AI companion could not answer just now.')}finally{setAiBusy(false)}}return <><main className="hero-surface"><section className="hero-layout"><div className="hero-copy"><p className="kicker"><i/> LIVE TRAVEL ARCHIVE</p><h1><span>Sabbatical</span><em>Explorations</em></h1>
-<p className="lead">Follow our travels across South America and Asia using the interactive map. Browse stories and photos by country and location.
+<p className="lead">
+  Follow our travels across South America and Asia using the interactive map. Browse stories and photos by country and location.
+</p>
 
-Use the menu in the top-right corner to explore the site.
+<p className="lead">
+  Use the menu in the top-right corner to explore the site.
+</p>
 
-Short on time? Ask the AI Companion in the bottom-right corner for a quick summary.</p>
+<p className="lead">
+  Short on time? Ask the AI Companion in the bottom-right corner for a quick summary.
+</p>
 
 {data.usingFallback&&<p className="setup-note">Running on fallback data. Connect Supabase to make it live.</p>}</div><RouteMap countries={data.countries}locations={data.locations}selected={selected}setSelected={setSelected}phase={phase}setPhase={setPhase}currentId={live}/></section></main><LatestStory data={data}/>
 
