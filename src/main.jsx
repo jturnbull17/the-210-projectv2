@@ -1059,7 +1059,8 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
   {locs.map(l => (
     <a
       key={l.id}
-      href={`/archive/${l.hero_image}
+      href={`/archive/${country.id}/${l.slug}`}
+<img src={l.hero_image} alt={l.name}
 
       <div>
         <span>{l.date_text}</span>
