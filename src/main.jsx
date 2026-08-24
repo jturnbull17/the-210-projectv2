@@ -487,7 +487,14 @@ const loadingMessages=[
   'Reviewing published stories...',
   'Exploring the route...',
   'Finding the best answer...'
-];async function askCompanion(overrideQuestion){const question=String(overrideQuestion||query).trim();if(!question){setAiError('Ask a question first.');return}if(!hasSupabase||!supabase){setAiError('AI needs Supabase to be connected first.');return}setAiBusy(true);setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);setAiError('');try{const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});if(error)throw error;setAiAnswer(res?.answer||'I could not find a published story for that yet.')}catch(e){setAiError(e.message||'The AI companion could not answer just now.')}finally{setAiBusy(false)}}return <><main className="hero-surface"><section className="hero-layout"><div className="hero-copy"><p className="kicker"><i/> LIVE TRAVEL ARCHIVE</p><h1><span>Sabbatical</span><em>Explorations</em></h1><p className="lead">Jack and Grace's live travel journal, where we will document our experiences in South America and Asia over 210 days!</p>{data.usingFallback&&<p className="setup-note">Running on fallback data. Connect Supabase to make it live.</p>}</div><RouteMap countries={data.countries}locations={data.locations}selected={selected}setSelected={setSelected}phase={phase}setPhase={setPhase}currentId={live}/></section></main><LatestStory data={data}/>
+];async function askCompanion(overrideQuestion){const question=String(overrideQuestion||query).trim();if(!question){setAiError('Ask a question first.');return}if(!hasSupabase||!supabase){setAiError('AI needs Supabase to be connected first.');return}setAiBusy(true);setLoadingMessage(loadingMessages[Math.floor(Math.random()*loadingMessages.length)]);setAiError('');try{const{data:res,error}=await supabase.functions.invoke('ask-companion',{body:{question}});if(error)throw error;setAiAnswer(res?.answer||'I could not find a published story for that yet.')}catch(e){setAiError(e.message||'The AI companion could not answer just now.')}finally{setAiBusy(false)}}return <><main className="hero-surface"><section className="hero-layout"><div className="hero-copy"><p className="kicker"><i/> LIVE TRAVEL ARCHIVE</p><h1><span>Sabbatical</span><em>Explorations</em></h1>
+<p className="lead">Follow our travels across South America and Asia using the interactive map. Browse stories and photos by country and location.
+
+Use the menu in the top-right corner to explore the site.
+
+Short on time? Ask the AI Companion in the bottom-right corner for a quick summary.</p>
+
+{data.usingFallback&&<p className="setup-note">Running on fallback data. Connect Supabase to make it live.</p>}</div><RouteMap countries={data.countries}locations={data.locations}selected={selected}setSelected={setSelected}phase={phase}setPhase={setPhase}currentId={live}/></section></main><LatestStory data={data}/>
 
 <Footer/><FloatingCompanion data={data}/><BottomNav/></>}
 function getLatestStory(data){const locs=[...(data.locations||[])];if(!locs.length)return null;const current=locs.find(l=>l.country_id===data.settings.current_country_id&&l.slug===data.settings.current_location_slug);const sorted=[...locs].sort((a,b)=>String(b.created_at||b.updated_at||b.date_text||'').localeCompare(String(a.created_at||a.updated_at||a.date_text||'')));const loc=current||sorted[0]||locs[locs.length-1];const country=getCountry(data.countries,loc.country_id);return{loc,country}}
@@ -1049,9 +1056,13 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
 <section className="story-section"><div className="section-inner country-template"><section><p className="kicker dark"><i/> LOCATIONS VISITED</p>
 
 <div className="location-grid">
-  {locs.map(l =>
-    <a/archive/${country.id}/${l.slug}`}
-      <img src={l.hero_image} alt={       <span>{l.date_text}</span>
+  {locs.map(l => (
+    <a
+      key={l.id}
+      href={`/archive/${l.hero_image}
+
+      <div>
+        <span>{l.date_text}</span>
 
         <h3>{l.name}</h3>
 
@@ -1062,8 +1073,11 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
         </span>
       </div>
     </a>
-  )}
+  ))}
 </div>
+
+
+
 </section></div></section><BottomNav/></>}
 function LocationPage({countryId,slug,gallery=false}){const[data,refresh]=useData();if(!data)return <Loading/>;const country=getCountry(data.countries,countryId),loc=data.locations.find(l=>l.country_id===country.id&&l.slug===slug)||{},media=data.media.filter(m=>m.location_id===loc.id),comments=data.comments.filter(c=>c.location_id===loc.id);if(gallery)return <GalleryPage country={country}loc={loc}media={media}/>;return <><main className="hero-surface location-hero"><section className="detail-layout"><div><Crumbs items={[{label:country.name,href:`/archive/${country.id}`},{label:loc.name||slug}]}/><p className="kicker"><i/> LOCATION STORY</p><h1>{loc.name||slug}</h1><p className="lead">{loc.summary}</p></div><div className="detail-image">
   {loc.hero_image && React.createElement(
