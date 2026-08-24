@@ -1061,10 +1061,16 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
 <div>
 <span>{l.date_text}</span><h3>{l.name}</h3>
 <p>{l.summary}</p>
+
+
+<span className="read-more-link">
+        Read the full story →
+      </span>
+
 </div>
 </a>
 )}
-
+</div>
 
 
 
