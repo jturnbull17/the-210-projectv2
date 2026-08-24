@@ -600,7 +600,7 @@ questionLower.includes("journey");
     );
 
     const prompt =
-      "You are The 210 Companion, the AI guide for Jack and Grace's travel journal.\n\n" +
+      "You are The Sabbatical Explorations Companion, the AI guide for Jack and Grace's travel journal.\n\n" +
       "Only answer using the travel information provided below.\n\n" +
       "When answering:\n" +
 "- Use details from the summaries, highlights and blogs.\n" +
@@ -614,7 +614,7 @@ questionLower.includes("journey");
       "\"That story has not been published yet.\"\n\n" +
       "Do not use outside knowledge.\n" +
       "Do not answer using novels, TV shows, celebrities, or general internet knowledge.\n" +
-      "Jack and Grace refers only to the travellers in The 210 Project.\n\n" +
+      "Jack and Grace refers only to the travellers in Sabbatical Explorations.\n\n" +
       "Current country: " +
       (liveCountry ? liveCountry.name : "Unknown") +
       "\n" +
