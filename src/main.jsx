@@ -1056,27 +1056,21 @@ function CountryPage({id}){const[data]=useData();if(!data)return <Loading/>;cons
 <section className="story-section"><div className="section-inner country-template"><section><p className="kicker dark"><i/> LOCATIONS VISITED</p>
 
 <div className="location-grid">
-  {locs.map(l => (
-    <a
-      key={l.id}
-      hreflug}`}
-      <img
-ro_image}
+{locs.map(l=><a key={l.id}href={`/archive/${country.id}/${l.slug}`}>
+<img src={l.hero_image}alt={l.name}/>
+<div>
+<span>{l.date_text}</span><h3>{l.name}</h3>
+<p>{l.summary}</p>
 
-      <div>
-        <span>{l.date_text}</span>
 
-        <h3>{l.name}</h3>
+<span className="read-more-link">
+        Read the full story →
+      </span>
 
-        <p>{l.summary}</p>
-
-        <span className="read-more-link">
-          Read the full story →
-        </span>
-      </div>
-    </a>
-  ))}
 </div>
+</a>
+)}
+
 
 
 
