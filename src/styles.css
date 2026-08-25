@@ -23,7 +23,7 @@
 }
 
 .panel-actions a:first-child{
-  background:#092a23;
+  background:var(--copper);
 }
 
 .story-section{background:var(--story);color:var(--ink)}.section-inner{padding:92px 0}.companion-section{padding:110px 0;scroll-margin-top:20vh}.companion-inner{display:grid;grid-template-columns:.9fr 1fr;gap:56px}.companion-copy h2{font-family:'Cormorant Garamond';font-size:58px;line-height:.9}.answer-card{border:1px solid rgba(244,237,223,.26);padding:22px}.answer-head{display:flex;justify-content:space-between;font-size:9px;font-weight:900;letter-spacing:.12em;color:rgba(244,237,223,.58)}.answer-card article{background:var(--cream2);color:var(--ink);padding:36px;margin-top:18px;min-height:220px}.answer-card article h3{font-family:'Cormorant Garamond';font-size:31px}
