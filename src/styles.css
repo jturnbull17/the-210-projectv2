@@ -1126,3 +1126,17 @@ flex:1;
 
   text-transform:uppercase;
 }
+
+/* Links inside published travel stories */
+.rich-story a {
+  color: #c47b45;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+/* Colour when someone hovers over a link */
+.rich-story a:hover {
+  color: #8f5129;
+}
